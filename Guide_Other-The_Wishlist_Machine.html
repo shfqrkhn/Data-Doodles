@@ -1,0 +1,90 @@
+/* Floating Navbar */
+.floating-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-primary-text);
+    color: var(--color-surface);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+    /* Start collapsed by default */
+    transform: translateY(calc(100% - 48px)); /* Collapsed height (toggle button height) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.floating-navbar.expanded {
+    transform: translateY(0); /* Expands fully */
+}
+
+.navbar-toggle {
+    background-color: var(--color-accent-blue);
+    color: var(--color-surface);
+    border: none;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    width: fit-content;
+    /* Apply negative margin only when not expanded */
+    margin-top: -48px;
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+    align-self: center;
+}
+/* When navbar is expanded, remove the negative margin on the toggle */
+.floating-navbar.expanded .navbar-toggle {
+    margin-top: 0;
+}
+
+
+.navbar-content {
+    width: 100%;
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    max-height: 70vh; /* Limit height for mobile */
+    overflow-y: auto;
+    /* By default, hide content when not expanded (mobile behavior) */
+    display: none;
+}
+/* When navbar is expanded, show content */
+.floating-navbar.expanded .navbar-content {
+    display: flex;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+    /* For desktop, navbar content should always be visible */
+    .floating-navbar .navbar-content {
+        display: flex; /* Always show content on desktop */
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: flex-start;
+        max-height: none;
+        overflow-y: visible;
+        padding-top: var(--spacing-md);
+    }
+    /* On desktop, the navbar starts collapsed but without hiding content via `display: none` on .navbar-content */
+    .floating-navbar:not(.expanded) {
+        transform: translateY(calc(100% - 48px));
+    }
+    .navbar-toggle {
+        /* On desktop, the toggle button itself might still need margin based on the overall navbar position */
+        margin-top: -48px; /* Still needed to pull the button up when navbar is collapsed on desktop */
+    }
+    .floating-navbar.expanded .navbar-toggle {
+        margin-top: 0; /* No negative margin when expanded */
+    }
+}
