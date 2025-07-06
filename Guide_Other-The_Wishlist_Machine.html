@@ -1,90 +1,1147 @@
-/* Floating Navbar */
-.floating-navbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: var(--color-primary-text);
-    color: var(--color-surface);
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    transition: transform 0.3s ease-in-out;
-    /* Start collapsed by default */
-    transform: translateY(calc(100% - 48px)); /* Collapsed height (toggle button height) */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.floating-navbar.expanded {
-    transform: translateY(0); /* Expands fully */
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wishlist Machine: Building a High-Throughput Workstation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Custom Properties for Themed Styling */
+        :root {
+            --background-color: #F8F9FA;
+            --surface-color: #FFFFFF;
+            --primary-text-color: #212529;
+            --secondary-text-color: #6C757D;
+            --accent-color-1: #007BFF; /* Vibrant Blue */
+            --accent-color-2: #28A745; /* Green */
+            --border-color: #DEE2E6; /* Light Gray Border */
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --focus-outline-color: #0056b3; /* Darker blue for focus */
+        }
 
-.navbar-toggle {
-    background-color: var(--color-accent-blue);
-    color: var(--color-surface);
-    border: none;
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
-    padding: var(--spacing-xs) var(--spacing-md);
-    font-size: var(--font-size-base);
-    font-weight: 600;
-    cursor: pointer;
-    width: fit-content;
-    /* Apply negative margin only when not expanded */
-    margin-top: -48px;
-    min-width: 48px;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease;
-    align-self: center;
-}
-/* When navbar is expanded, remove the negative margin on the toggle */
-.floating-navbar.expanded .navbar-toggle {
-    margin-top: 0;
-}
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
+        }
 
+        html {
+            scroll-behavior: smooth;
+        }
 
-.navbar-content {
-    width: 100%;
-    padding: var(--spacing-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    max-height: 70vh; /* Limit height for mobile */
-    overflow-y: auto;
-    /* By default, hide content when not expanded (mobile behavior) */
-    display: none;
-}
-/* When navbar is expanded, show content */
-.floating-navbar.expanded .navbar-content {
-    display: flex;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--primary-text-color);
+            line-height: 1.6;
+            font-size: 1rem; /* Base font size */
+            -webkit-text-size-adjust: 100%; /* Prevent text zoom issues */
+        }
 
-/* Responsive Adjustments */
-@media (min-width: 768px) {
-    /* For desktop, navbar content should always be visible */
-    .floating-navbar .navbar-content {
-        display: flex; /* Always show content on desktop */
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: flex-start;
-        max-height: none;
-        overflow-y: visible;
-        padding-top: var(--spacing-md);
-    }
-    /* On desktop, the navbar starts collapsed but without hiding content via `display: none` on .navbar-content */
-    .floating-navbar:not(.expanded) {
-        transform: translateY(calc(100% - 48px));
-    }
-    .navbar-toggle {
-        /* On desktop, the toggle button itself might still need margin based on the overall navbar position */
-        margin-top: -48px; /* Still needed to pull the button up when navbar is collapsed on desktop */
-    }
-    .floating-navbar.expanded .navbar-toggle {
-        margin-top: 0; /* No negative margin when expanded */
-    }
-}
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--primary-text-color);
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.75rem; }
+        h4 { font-size: 1.5rem; }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.75rem; }
+            h3 { font-size: 1.5rem; }
+            h4 { font-size: 1.25rem; }
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        a {
+            color: var(--accent-color-1);
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+        }
+
+        a:hover, a:focus {
+            color: var(--focus-outline-color);
+            text-decoration: underline;
+            outline: 2px solid var(--focus-outline-color);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        button {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--accent-color-1);
+            color: var(--surface-color);
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            min-width: 48px; /* WCAG touch target */
+            min-height: 48px; /* WCAG touch target */
+        }
+
+        button:hover {
+            background-color: var(--focus-outline-color);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--focus-outline-color);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--primary-text-color);
+            background-color: var(--surface-color);
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        input[type="number"]:focus-visible, input[type="text"]:focus-visible {
+            border-color: var(--accent-color-1);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+
+        /* Layout & Containers */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Banner Section */
+        .banner {
+            background: linear-gradient(135deg, var(--accent-color-1), #0056b3);
+            color: var(--surface-color);
+            padding: 4rem 1rem;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .banner h1 {
+            color: var(--surface-color);
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .banner p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0.5rem auto 0;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .banner {
+                padding: 3rem 1rem;
+            }
+            .banner h1 {
+                font-size: 2.5rem;
+            }
+            .banner p {
+                font-size: 1rem;
+            }
+        }
+
+        /* Main Content Grid */
+        .main-content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .main-content-grid {
+                grid-template-columns: 2fr 1fr; /* Two-column layout for larger screens */
+            }
+            .main-content-grid .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        /* Interactive Centerpiece */
+        .interactive-centerpiece .component-category {
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .interactive-centerpiece details > summary {
+            padding: 1rem;
+            background-color: var(--background-color);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: block; /* For custom arrow */
+            position: relative;
+            outline: none;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .interactive-centerpiece details > summary:hover {
+            background-color: #E9ECEF;
+        }
+
+        .interactive-centerpiece details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .interactive-centerpiece details > summary::after {
+            content: '+';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .interactive-centerpiece details[open] > summary::after {
+            content: '-';
+            transform: translateY(-50%) rotate(0deg);
+        }
+
+        .interactive-centerpiece details > summary:focus-visible {
+            outline: 2px solid var(--focus-outline-color);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .interactive-centerpiece .component-content {
+            padding: 1rem;
+            background-color: var(--surface-color);
+        }
+
+        .interactive-centerpiece .component-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            gap: 0.75rem;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .interactive-centerpiece .component-option label {
+            flex-grow: 1;
+            font-size: 0.95rem;
+            color: var(--primary-text-color);
+        }
+
+        .interactive-centerpiece .component-option input[type="number"] {
+            width: 80px;
+            text-align: center;
+        }
+
+        .interactive-centerpiece .cost-summary {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .interactive-centerpiece .cost-summary p {
+            margin: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .interactive-centerpiece .cost-summary span {
+            color: var(--accent-color-1);
+        }
+
+        /* Deep Dive Modules */
+        .deep-dive-modules .module-item {
+            margin-bottom: 1.5rem;
+        }
+        .deep-dive-modules .module-item h3 {
+            color: var(--accent-color-1);
+        }
+        .deep-dive-modules ul {
+            list-style-type: disc;
+            margin-left: 1.5em;
+            padding: 0;
+        }
+        .deep-dive-modules li {
+            margin-bottom: 0.5em;
+        }
+
+        /* MythBusting & FAQ */
+        .myth-faq details {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .myth-faq details summary {
+            padding: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: var(--background-color);
+            position: relative;
+            display: block;
+            outline: none;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .myth-faq details summary:hover {
+            background-color: #E9ECEF;
+        }
+
+        .myth-faq details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .myth-faq details summary::after {
+            content: '+';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .myth-faq details[open] summary::after {
+            content: '-';
+            transform: translateY(-50%) rotate(0deg);
+        }
+
+        .myth-faq details summary:focus-visible {
+            outline: 2px solid var(--focus-outline-color);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .myth-faq .content {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--surface-color);
+        }
+        .myth-faq .content p {
+            margin-bottom: 0.5em;
+        }
+
+        /* Action Plan & Resources */
+        .action-plan ol {
+            list-style-type: decimal;
+            margin-left: 1.5em;
+            padding: 0;
+        }
+        .action-plan li {
+            margin-bottom: 0.75em;
+        }
+        .resources ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .resources li {
+            margin-bottom: 0.5em;
+        }
+
+        /* Chart Styles */
+        .chart-wrapper {
+            position: relative;
+            height: 300px; /* Fixed height for charts */
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-wrapper canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Floating Navbar */
+        .floating-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-text-color); /* Dark background for navbar */
+            color: var(--surface-color);
+            box-shadow: 0 -4px 8px var(--shadow-color);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            z-index: 1000;
+            transform: translateY(calc(100% - 48px)); /* Collapsed by default, show toggle button */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .floating-navbar.expanded {
+            transform: translateY(0);
+        }
+
+        .navbar-toggle {
+            position: absolute;
+            top: -48px; /* Position above the navbar */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color-1);
+            color: var(--surface-color);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            line-height: 1;
+            border: 3px solid var(--surface-color);
+            box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            z-index: 1001;
+        }
+
+        .navbar-toggle:hover {
+            background-color: var(--focus-outline-color);
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        .navbar-toggle:focus-visible {
+            outline: 2px solid var(--focus-outline-color);
+            outline-offset: 4px;
+            border-radius: 50%;
+        }
+
+        .navbar-content {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .navbar-content h4 {
+            color: var(--surface-color);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .navbar-tool {
+            background-color: #343A40; /* Slightly lighter dark for tool cards */
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #495057;
+        }
+
+        .navbar-tool label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-text-color);
+            font-size: 0.9rem;
+        }
+
+        .navbar-tool input {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .navbar-tool .result {
+            font-weight: 600;
+            color: var(--accent-color-2);
+            font-size: 1.1rem;
+        }
+
+        /* Sources Section */
+        .sources-section {
+            text-align: left;
+            margin-top: 2rem;
+        }
+        .sources-section ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        .sources-section li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .sources-section li a {
+            word-break: break-all; /* Prevent long URLs from overflowing */
+        }
+
+        /* Utility classes for accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="banner">
+        <div class="container">
+            <h1>The Wishlist Machine</h1>
+            <p class="tagline">Unlocking Elite Performance with Enterprise-Grade Value</p>
+            <p class="banner-description">Explore a two-stage blueprint for a high-performance workstation optimized for AI/ML, 4K gaming, virtualization, and media serving, prioritizing efficiency and quiet operation.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="main-content-grid">
+            <div class="full-width card">
+                <h2>Thesis Statement</h2>
+                <p>Achieve elite performance for AI/ML, 4K gaming, virtualization, and media serving by strategically leveraging cost-effective, high-value used enterprise hardware, ensuring a quiet, efficient, and upgradeable system.</p>
+            </div>
+
+            <div class="card interactive-centerpiece">
+                <h2>Component Selector & Cost Estimator</h2>
+                <p>Dynamically estimate the cost of your Wishlist Machine by adjusting component quantities. Prices are estimates in CAD based on Ottawa sourcing.</p>
+
+                <div class="component-category">
+                    <details open>
+                        <summary aria-expanded="true" aria-controls="cpu-details">CPUs & Motherboard</summary>
+                        <div class="component-content" id="cpu-details">
+                            <div class="component-option">
+                                <label for="cpu-qty">Intel Xeon E5-2680 v4 (Used):</label>
+                                <input type="number" id="cpu-qty" value="1" min="0" max="2" data-mvp-cost="60" data-final-cost="60" aria-label="Quantity of Intel Xeon E5-2680 v4 CPUs">
+                            </div>
+                            <div class="component-option">
+                                <label for="motherboard-qty">Supermicro X10DRi (Used):</label>
+                                <input type="number" id="motherboard-qty" value="1" min="0" max="1" data-mvp-cost="200" data-final-cost="200" aria-label="Quantity of Supermicro X10DRi Motherboards">
+                            </div>
+                            <div class="component-option">
+                                <label for="cpu-cooler-qty">Noctua NH-U12S redux (New):</label>
+                                <input type="number" id="cpu-cooler-qty" value="1" min="0" max="2" data-mvp-cost="115" data-final-cost="115" aria-label="Quantity of Noctua NH-U12S redux CPU Coolers">
+                            </div>
+                            <div class="component-option">
+                                <label for="cooler-mount-qty">Noctua NM-i2011 Kit (New):</label>
+                                <input type="number" id="cooler-mount-qty" value="1" min="0" max="2" data-mvp-cost="15" data-final-cost="15" aria-label="Quantity of Noctua NM-i2011 Mounting Kits">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="component-category">
+                    <details>
+                        <summary aria-expanded="false" aria-controls="memory-details">System Memory</summary>
+                        <div class="component-content" id="memory-details">
+                            <div class="component-option">
+                                <label for="ram-qty">32GB DDR4 ECC RDIMM (Used):</label>
+                                <input type="number" id="ram-qty" value="4" min="0" max="8" step="4" data-mvp-cost="60" data-final-cost="60" aria-label="Quantity of 32GB DDR4 ECC RDIMM modules">
+                                <span class="secondary-text-color">(4 modules = 128GB, 8 modules = 256GB)</span>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="component-category">
+                    <details>
+                        <summary aria-expanded="false" aria-controls="gpu-details">Graphics & Interconnect</summary>
+                        <div class="component-content" id="gpu-details">
+                            <div class="component-option">
+                                <label for="gpu-qty">NVIDIA GeForce RTX 3090 Blower (Used):</label>
+                                <input type="number" id="gpu-qty" value="1" min="0" max="2" data-mvp-cost="900" data-final-cost="900" aria-label="Quantity of NVIDIA GeForce RTX 3090 GPUs">
+                            </div>
+                            <div class="component-option">
+                                <label for="nvlink-qty">RTX 3090 NVLink Bridge (Used/New):</label>
+                                <input type="number" id="nvlink-qty" value="0" min="0" max="1" data-mvp-cost="0" data-final-cost="100" aria-label="Quantity of NVLink Bridges">
+                                <span class="secondary-text-color">(Required for 2 GPUs)</span>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="component-category">
+                    <details>
+                        <summary aria-expanded="false" aria-controls="storage-details">Storage Hierarchy</summary>
+                        <div class="component-content" id="storage-details">
+                            <div class="component-option">
+                                <label for="os-ssd-qty">Samsung 980 Pro 1TB NVMe SSD (New) - OS RAID 1:</label>
+                                <input type="number" id="os-ssd-qty" value="2" min="0" max="2" data-mvp-cost="150" data-final-cost="150" aria-label="Quantity of 1TB NVMe SSDs for OS RAID 1">
+                            </div>
+                            <div class="component-option">
+                                <label for="active-ssd-qty">Samsung 980 Pro 2TB NVMe SSD (New) - Active Data:</label>
+                                <input type="number" id="active-ssd-qty" value="1" min="0" max="1" data-mvp-cost="280" data-final-cost="280" aria-label="Quantity of 2TB NVMe SSDs for active data">
+                            </div>
+                            <div class="component-option">
+                                <label for="hdd-qty">Seagate Exos X18 16TB HDD (New) - Bulk Storage:</label>
+                                <input type="number" id="hdd-qty" value="6" min="0" max="18" data-mvp-cost="430" data-final-cost="430" aria-label="Quantity of 16TB HDDs for bulk storage">
+                            </div>
+                            <div class="component-option">
+                                <label for="hba-qty">LSI 9207-8i HBA (IT Mode) (Used):</label>
+                                <input type="number" id="hba-qty" value="1" min="0" max="1" data-mvp-cost="50" data-final-cost="50" aria-label="Quantity of LSI 9207-8i HBAs">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="component-category">
+                    <details>
+                        <summary aria-expanded="false" aria-controls="chassis-details">Chassis & Power</summary>
+                        <div class="component-content" id="chassis-details">
+                            <div class="component-option">
+                                <label for="chassis-qty">Fractal Design Define 7 XL (New):</label>
+                                <input type="number" id="chassis-qty" value="1" min="0" max="1" data-mvp-cost="330" data-final-cost="330" aria-label="Quantity of Fractal Design Define 7 XL Chassis">
+                            </div>
+                            <div class="component-option">
+                                <label for="case-fan-qty">Fractal Design Dynamic X2 GP-14 PWM (New):</label>
+                                <input type="number" id="case-fan-qty" value="3" min="0" max="9" data-mvp-cost="20" data-final-cost="20" aria-label="Quantity of Fractal Design Dynamic X2 GP-14 PWM Case Fans">
+                                <span class="secondary-text-color">(3 included with case, 3 more recommended for optimal airflow)</span>
+                            </div>
+                            <div class="component-option">
+                                <label for="psu-qty">Seasonic PRIME TX-1300 Titanium (New):</label>
+                                <input type="number" id="psu-qty" value="1" min="0" max="1" data-mvp-cost="640" data-final-cost="640" aria-label="Quantity of Seasonic PRIME TX-1300 Titanium PSUs">
+                            </div>
+                            <div class="component-option">
+                                <label for="nic-qty">10GbE Network Card (Used Intel/Mellanox):</label>
+                                <input type="number" id="nic-qty" value="1" min="0" max="1" data-mvp-cost="40" data-final-cost="40" aria-label="Quantity of 10GbE Network Cards">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="cost-summary">
+                    <p>Estimated MVP Total Cost: <span id="mvp-total-cost">Calculating...</span></p>
+                    <p>Estimated Final Build Total Cost: <span id="final-total-cost">Calculating...</span></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Core Learning Outcome</h3>
+                <p>Users will learn that high-performance computing doesn't always require brand-new, expensive components; smart sourcing of enterprise-grade used hardware can achieve superior performance-per-dollar, enabling powerful systems for a fraction of the cost.</p>
+            </div>
+
+            <div class="card deep-dive-modules">
+                <h2>Deep Dive Modules</h2>
+
+                <div class="module-item">
+                    <h3>Platform Analysis: The Strategic Advantage of Intel's Broadwell-EP (Xeon E5 v4)</h3>
+                    <p>The Intel Xeon E5-2600 v3/v4 "Broadwell-EP" platform (LGA2011-3) is chosen for its exceptional value. These high-core-count CPUs are available on the secondary market for a fraction of their original cost. Its use of affordable DDR4 ECC Registered DIMMs (RDIMMs) further reduces total platform cost compared to modern DDR5 server platforms.</p>
+                    <ul>
+                        <li><strong>Cost-Effectiveness:</strong> Used Xeon E5 v4 CPUs and ECC RDIMMs offer unparalleled performance-per-dollar.</li>
+                        <li><strong>Scalability:</strong> Dual-CPU configuration provides 28 cores/56 threads (E5-2680 v4), exceeding 24-core minimum.</li>
+                        <li><strong>I/O Abundance:</strong> 80 PCIe 3.0 lanes (40 per CPU) ensure ample bandwidth for dual GPUs, HBA, and 10GbE NIC without bottlenecks.</li>
+                        <li><strong>Compatibility:</strong> Supermicro X10DRi motherboard supports dual LGA2011-3 sockets, 16 DIMM slots (up to 1TB ECC), and Square ILM CPU cooler mounting.</li>
+                    </ul>
+                </div>
+
+                <div class="module-item">
+                    <h3>GPU Strategy: The Unmatched Versatility of the NVIDIA GeForce RTX 3090 with NVLink</h3>
+                    <p>The NVIDIA GeForce RTX 3090 is uniquely suited for this build, balancing high-fidelity 4K gaming with serious AI/ML capabilities, primarily due to its 24GB GDDR6X VRAM and NVLink support.</p>
+                    <ul>
+                        <li><strong>Unified VRAM:</strong> NVLink allows two RTX 3090s to be bridged, creating a 48GB unified memory pool critical for large AI models.</li>
+                        <li><strong>Performance:</strong> Top-tier for 4K gaming and formidable for AI/deep learning, especially with NVLink for model parallelism.</li>
+                        <li><strong>Thermal Management:</strong> Blower-style RTX 3090s are recommended to exhaust hot air directly out of the chassis, preventing thermal throttling in multi-GPU setups.</li>
+                        <li><strong>Undervolting:</strong> Software-level optimization (e.g., MSI Afterburner) can significantly reduce power consumption, heat, and noise without major performance loss.</li>
+                    </ul>
+                </div>
+
+                <div class="module-item">
+                    <h3>Storage Architecture: A Three-Tiered Approach for Performance and Resilience</h3>
+                    <p>A robust storage hierarchy ensures optimal performance for different workloads and absolute data integrity, crucial for a workstation serving multiple roles.</p>
+                    <ul>
+                        <li><strong>Tier 0 (OS & Apps):</strong> Two 1TB NVMe SSDs (Samsung 980 Pro) in RAID 1 for fast, redundant OS and application loading.</li>
+                        <li><strong>Tier 1 (Active Data):</strong> One 2TB NVMe SSD (Samsung 980 Pro) for high-speed VM images, AI datasets, and application caches.</li>
+                        <li><strong>Tier 2 (Bulk Storage):</strong> Six 16TB enterprise HDDs (Seagate Exos X18) in ZFS RAIDZ2 for massive capacity, two-drive fault tolerance, and data integrity.</li>
+                        <li><strong>HBA:</strong> An LSI 9207-8i (IT Mode) HBA provides direct, unmanaged access to physical drives for ZFS.</li>
+                    </ul>
+                </div>
+
+                <div class="module-item">
+                    <h3>Thermal Management: A Quiet, High-Performance Air-Cooling Strategy</h3>
+                    <p>Achieving acoustic discretion while managing significant thermal loads is a core design goal, realized through careful component selection and fan configuration.</p>
+                    <ul>
+                        <li><strong>CPU Coolers:</strong> Two Noctua NH-U12S redux coolers (with NM-i2011 kits) provide excellent, quiet cooling for the 120W TDP CPUs.</li>
+                        <li><strong>Case Fans:</strong> Fractal Design Define 7 XL's sound-dampened design, combined with additional Fractal Dynamic X2 GP-14 fans, creates optimal, quiet airflow.</li>
+                        <li><strong>PSU:</strong> Seasonic PRIME TX-1300 Titanium PSU offers 80 PLUS Titanium efficiency and a silent fanless mode under low loads, minimizing heat and noise.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Interactive Data Visualizations</h2>
+                <p>Explore key performance and efficiency aspects through these interactive charts.</p>
+
+                <div class="chart-wrapper">
+                    <canvas id="performanceValueChart" role="img" aria-label="Bar chart comparing multi-core performance value of Xeon E5 v4 vs. modern consumer CPUs."></canvas>
+                    <div class="sr-only">
+                        <h3>Multi-Core Performance Value Comparison</h3>
+                        <p>This bar chart compares the estimated multi-core performance value (performance points per dollar) for a dual Intel Xeon E5-2680 v4 setup versus a modern high-end consumer CPU like the AMD Ryzen 9 7950X.</p>
+                        <ul>
+                            <li>Dual Xeon E5-2680 v4: Approximately 200 performance points per dollar.</li>
+                            <li>AMD Ryzen 9 7950X: Approximately 50 performance points per dollar.</li>
+                        </ul>
+                        <p>This illustrates the significant cost-effectiveness of the older enterprise platform for multi-threaded workloads.</p>
+                    </div>
+                </div>
+
+                <div class="chart-wrapper">
+                    <canvas id="undervoltingImpactChart" role="img" aria-label="Scatter plot showing the impact of undervolting on GPU power consumption and relative performance."></canvas>
+                    <div class="sr-only">
+                        <h3>GPU Undervolting Impact: Power vs. Performance</h3>
+                        <p>This scatter plot shows the typical relationship between GPU power consumption (in Watts) and its relative performance (as a percentage of stock performance) when undervolted. Lower power consumption can often be achieved with minimal performance loss.</p>
+                        <ul>
+                            <li>Stock Settings: 350W at 100% performance.</li>
+                            <li>Slight Undervolt: 300W at 98% performance.</li>
+                            <li>Moderate Undervolt: 250W at 95% performance.</li>
+                            <li>Aggressive Undervolt: 200W at 85% performance.</li>
+                        </ul>
+                        <p>The chart demonstrates that significant power savings are possible with only minor performance degradation, supporting the goal of acoustic discretion and efficiency.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card myth-faq">
+                <h2>MythBusting & Advanced FAQ</h2>
+
+                <h3>MythBusting</h3>
+                <details>
+                    <summary aria-expanded="false" aria-controls="myth1-content">Myth: Older enterprise hardware is always slow/outdated.</summary>
+                    <div class="content" id="myth1-content">
+                        <p><strong>Debunked:</strong> While individual core clock speeds of older enterprise CPUs like the Xeon E5 v4 might be lower than modern consumer CPUs, their high core and thread counts (e.g., 28 cores/56 threads for dual E5-2680 v4) offer immense aggregate throughput. For workloads like AI/ML training, virtualization, and media serving, which are throughput-bound and benefit from parallel processing, these older platforms provide exceptional performance-per-dollar that is unattainable with new consumer-grade components at a similar price point. The focus is on total system capability rather than single-core speed.</p>
+                    </div>
+                </details>
+                <details>
+                    <summary aria-expanded="false" aria-controls="myth2-content">Myth: PCIe 3.0 bottlenecks modern GPUs like the RTX 3090.</summary>
+                    <div class="content" id="myth2-content">
+                        <p><strong>Debunked:</strong> While the RTX 3090 is a PCIe 4.0 device, running it in a PCIe 3.0 x16 slot has a negligible real-world performance impact for the vast majority of gaming and compute workloads. Benchmarks consistently show only a few percentage points difference, if any, between PCIe 3.0 x16 and PCIe 4.0 x16 for even high-end GPUs. The Broadwell-EP platform's generous 80 PCIe 3.0 lanes (40 per CPU) ensure that dual GPUs can operate at their full x16 bandwidth without compromise, making it a non-bottleneck for this multi-role system.</p>
+                    </div>
+                </details>
+                <details>
+                    <summary aria-expanded="false" aria-controls="myth3-content">Myth: High-end workstations require liquid cooling for thermal management.</summary>
+                    <div class="content" id="myth3-content">
+                        <p><strong>Debunked:</strong> This build demonstrates that a high-performance, quiet system can be achieved with an all-air-cooling strategy. The key is careful component selection: choosing CPUs with a manageable Thermal Design Power (TDP) like the 120W E5-2680 v4, utilizing high-performance, quiet air coolers (Noctua NH-U12S redux), and opting for blower-style GPUs (RTX 3090) that exhaust heat directly out of the case. Furthermore, software optimizations like GPU undervolting significantly reduce heat output, allowing fans to run slower and quieter, enabling acoustic discretion.</p>
+                    </div>
+                </details>
+
+                <h3>Advanced FAQs</h3>
+                <details>
+                    <summary aria-expanded="false" aria-controls="faq1-content">FAQ: Why is ECC RDIMM memory a non-negotiable requirement for this build?</summary>
+                    <div class="content" id="faq1-content">
+                        <p><strong>Answer:</strong> ECC (Error-Correcting Code) memory is crucial for a system with server-level responsibilities such as virtualization, ZFS file serving, and hosting large AI models. It actively detects and corrects single-bit memory errors that could otherwise lead to system crashes, data corruption, or silent data loss. For critical workloads where data integrity is paramount, ECC RDIMM (Registered DIMM) provides the stability and reliability that standard consumer RAM cannot.</p>
+                    </div>
+                </details>
+                <details>
+                    <summary aria-expanded="false" aria-controls="faq2-content">FAQ: What is "IT Mode" for a Host Bus Adapter (HBA) and why is it critical for ZFS?</summary>
+                    <div class="content" id="faq2-content">
+                        <p><strong>Answer:</strong> "IT Mode" (Initiator Target Mode) firmware on a Host Bus Adapter (HBA) transforms the card into a simple pass-through device, presenting the raw physical storage drives directly to the operating system without any onboard RAID logic. This is critical for ZFS (Zettabyte File System) because ZFS manages its own software RAID, data integrity, and error correction at the file system level. If an HBA were in "IR Mode" (Integrated RAID) or had its own RAID controller, it would interfere with ZFS's ability to directly control and monitor the health of individual drives, undermining ZFS's core features like checksumming and self-healing. An IT Mode HBA ensures ZFS has full, unmanaged access to the drives.</p>
+                    </div>
+                </details>
+                <details>
+                    <summary aria-expanded="false" aria-controls="faq3-content">FAQ: How does GPU undervolting contribute to the system's goals?</summary>
+                    <div class="content" id="faq3-content">
+                        <p><strong>Answer:</strong> GPU undervolting is a software-level optimization that involves reducing the voltage supplied to the GPU core while maintaining or slightly adjusting its clock speed. This technique directly addresses the goals of acoustic discretion and power efficiency. By reducing the voltage, the GPU consumes significantly less power, which in turn lowers its heat output. Less heat means the cooling fans can run at slower, quieter speeds, contributing to the "acoustically discrete" mandate. In many cases, performance can even be maintained or slightly improved, as the GPU can sustain its target boost clock more consistently within a lower thermal and power envelope, preventing thermal throttling.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card action-plan">
+                <h2>Graduated Action Plan</h2>
+                <p>A tiered approach to building your Wishlist Machine.</p>
+                <h3>Foundational Steps</h3>
+                <ol>
+                    <li><strong>Research & Sourcing:</strong> Begin by researching used enterprise hardware markets (eBay.ca, Canada Server Store, Reddit communities) for the Intel Xeon E5 v4 CPUs, Supermicro X10DRi motherboard, and DDR4 ECC RDIMM.</li>
+                    <li><strong>Acquire Core Platform:</strong> Purchase the motherboard, one CPU, one CPU cooler (with mounting kit), and the initial 128GB (4x 32GB) of matched ECC RDIMM.</li>
+                    <li><strong>Initial Assembly & OS:</strong> Assemble the core platform, install the OS (e.g., Linux with ZFS support), and configure the RAID 1 mirror for the OS drives.</li>
+                </ol>
+                <h3>Intermediate Challenges</h3>
+                <ol>
+                    <li><strong>Storage Setup:</strong> Install the active data NVMe SSD and the bulk storage HDDs. Configure the ZFS RAIDZ2 pool using the IT Mode HBA.</li>
+                    <li><strong>Initial GPU Integration:</strong> Install the first RTX 3090 (blower style) and ensure drivers are correctly installed and functional for your primary workloads (gaming, AI/ML testing).</li>
+                    <li><strong>Basic Workload Testing:</strong> Begin running your primary workloads to ensure stability and performance of the initial MVP build.</li>
+                </ol>
+                <h3>Advanced Optimization</h3>
+                <ol>
+                    <li><strong>Second CPU & RAM Upgrade:</strong> Acquire the second identical Xeon E5-2680 v4 CPU and the second set of 128GB (4x 32GB) matched ECC RDIMM. Install them, ensuring proper DIMM slot population for quad-channel performance.</li>
+                    <li><strong>Second GPU & NVLink:</strong> Purchase the second identical blower-style RTX 3090 and the 4-slot NVLink bridge. Install the GPU and connect it via NVLink.</li>
+                    <li><strong>Thermal & Power Tuning:</strong> Implement GPU undervolting using tools like MSI Afterburner to optimize power consumption, reduce heat, and achieve desired acoustic discretion. Optimize case fan curves.</li>
+                    <li><strong>Network Integration:</strong> Install and configure the 10GbE NIC for high-speed network transfers and server roles.</li>
+                </ol>
+            </div>
+
+            <div class="card resources">
+                <h2>Curated Resources</h2>
+                <p>Further reading and tools to help you on your build journey.</p>
+                <ul>
+                    <li><a href="https://www.google.com/search?q=Intel+Xeon+E5+v4+platform+guide" target="_blank" rel="noopener noreferrer">Intel Xeon E5 v4 Platform Guide (Google Search)</a></li>
+                    <li><a href="https://www.google.com/search?q=RTX+3090+undervolting+guide" target="_blank" rel="noopener noreferrer">RTX 3090 Undervolting Guide (Google Search)</a></li>
+                    <li><a href="https://www.google.com/search?q=ZFS+RAIDZ2+configuration+guide" target="_blank" rel="noopener noreferrer">ZFS RAIDZ2 Configuration Guide (Google Search)</a></li>
+                    <li><a href="https://www.google.com/search?q=Supermicro+X10DRi+manual" target="_blank" rel="noopener noreferrer">Supermicro X10DRi Manual (Google Search)</a></li>
+                </ul>
+            </div>
+
+            <div class="card sources-section full-width">
+                <h2>Sources</h2>
+                <ul>
+                    <li>Supermicro X10DRi Manuals: <a href="https://www.supermicro.com/manuals/motherboard/C606_602/MNL-1491.pdf" target="_blank" rel="noopener noreferrer">supermicro.com/manuals/motherboard/C606_602/MNL-1491.pdf</a></li>
+                    <li>ServeTheHome - Supermicro X10DRi Review: <a href="https://www.servethehome.com/supermicro-x10dri-review-intel-xeon-e5-2600-v4-support/" target="_blank" rel="noopener noreferrer">servethehome.com/supermicro-x10dri-review-intel-xeon-e5-2600-v4-support/</a></li>
+                    <li>Intel® Xeon® Processor E5 v4 Family Specifications: <a href="https://www.intel.com/content/www/us/en/ark/products/series/91287/intel-xeon-processor-e5-v4-family.html" target="_blank" rel="noopener noreferrer">intel.com/content/www/us/en/ark/products/series/91287/intel-xeon-processor-e5-v4-family.html</a></li>
+                    <li>Intel Xeon E5-2680 v4 Product Specifications: <a href="https://www.intel.com/content/www/us/en/products/sku/91754/intel-xeon-processor-e52680-v4-35m-cache-2-40-ghz/specifications.html" target="_blank" rel="noopener noreferrer">intel.com/content/www/us/en/products/sku/91754/intel-xeon-processor-e52680-v4-35m-cache-2-40-ghz/specifications.html</a></li>
+                    <li>CPU Benchmark - Intel Xeon E5-2680 v4: <a href="https://www.cpubenchmark.net/cpu.php?cpu=Intel+Xeon+E5-2680+v4+%402.40GHz&id=2779" target="_blank" rel="noopener noreferrer">cpubenchmark.net/cpu.php?cpu=Intel+Xeon+E5-2680+v4+%402.40GHz&id=2779</a></li>
+                    <li>FiberMall - NVLink Compatible Cards: <a href="https://www.fibermall.com/blog/nvlink-compatible-cards.htm" target="_blank" rel="noopener noreferrer">fibermall.com/blog/nvlink-compatible-cards.htm</a></li>
+                    <li>HotHardware - NVIDIA GeForce RTX 3090 Review: <a href="https://hothardware.com/reviews/nvidia-geforce-rtx-3090-bfgpu-review" target="_blank" rel="noopener noreferrer">hothardware.com/reviews/nvidia-geforce-rtx-3090-bfgpu-review</a></li>
+                    <li>Medium - Understanding GPU Choices for Large AI Models: <a href="https://medium.com/@vvekthkr/understanding-gpu-choices-for-large-ai-models-4090-vs-ada-6000-vs-nvlinked-dual-rtx-3090-7ff82f5a45ce" target="_blank" rel="noopener noreferrer">medium.com/@vvekthkr/understanding-gpu-choices-for-large-ai-models-4090-vs-ada-6000-vs-nvlinked-dual-rtx-3090-7ff82f5a45ce</a></li>
+                    <li>Windows Central - Nvidia kills off NVLink on RTX 4090: <a href="https://www.windowscentral.com/hardware/computers-desktops/nvidia-kills-off-nvlink-on-rtx-4090" target="_blank" rel="noopener noreferrer">windowscentral.com/hardware/computers-desktops/nvidia-kills-off-nvlink-on-rtx-4090</a></li>
+                    <li>Tom's Hardware - Gigabyte's RTX 4090 has Traces of NVLink: <a href="https://www.tomshardware.com/news/gigabyte-leaves-nvlink-traces-on-geforce-rtx-4090" target="_blank" rel="noopener noreferrer">tomshardware.com/news/gigabyte-leaves-nvlink-traces-on-geforce-rtx-4090</a></li>
+                    <li>Himesh's Blog - VLLM Performance Benchmarks 4x RTX 3090: <a href="http://himeshp.blogspot.com/2025/03/vllm-performance-benchmarks-4x-rtx-3090.html" target="_blank" rel="noopener noreferrer">himeshp.blogspot.com/2025/03/vllm-performance-benchmarks-4x-rtx-3090.html</a></li>
+                    <li>Cherry Servers - Top 10 Best GPUs for Machine Learning: <a href="https://www.cherryservers.com/blog/best-gpus-for-machine-learning" target="_blank" rel="noopener noreferrer">cherryservers.com/blog/best-gpus-for-machine-learning</a></li>
+                    <li>Samsung 980 Pro SSD Specifications (various retailers): e.g., <a href="https://www.pc-canada.com/item/samsung-980-pro-mz-v8p1t0cw-1-tb-solid-state-drive/mz-v8p1t0cw" target="_blank" rel="noopener noreferrer">pc-canada.com/item/samsung-980-pro-mz-v8p1t0cw-1-tb-solid-state-drive/mz-v8p1t0cw</a></li>
+                    <li>Seagate Exos X18 Specifications (various retailers): e.g., <a href="https://www.pc-canada.com/item/seagate-exos-x18-st16000nm000j-16-tb-hard-drive/st16000nm000j" target="_blank" rel="noopener noreferrer">pc-canada.com/item/seagate-exos-x18-st16000nm000j-16-tb-hard-drive/st16000nm000j</a></li>
+                    <li>LSI SAS 9207-8i (IT Mode) Sourcing (various retailers): e.g., <a href="https://storagetekpro.com/products/Isi00301_9207-8i_sgl" target="_blank" rel="noopener noreferrer">storagetekpro.com/products/Isi00301_9207-8i_sgl</a></li>
+                    <li>Fractal Design Define 7 XL Specifications: <a href="https://www.fractal-design.com/products/cases/define/define-7-xl/black-tg-dark-tint/" target="_blank" rel="noopener noreferrer">fractal-design.com/products/cases/define/define-7-xl/black-tg-dark-tint/</a></li>
+                    <li>Noctua NH-U12S redux Specifications: <a href="https://noctua.at/en/nh-u12s-redux" target="_blank" rel="noopener noreferrer">noctua.at/en/nh-u12s-redux</a></li>
+                    <li>Seasonic PRIME TX-1300 Titanium PSU Specifications: <a href="https://www.pc-canada.com/item/seasonic-prime-atx-3-0-tx-1300-1300w-80-titanium-full-modula/ssr-1300tr2" target="_blank" rel="noopener noreferrer">pc-canada.com/item/seasonic-prime-atx-3-0-tx-1300-1300w-80-titanium-full-modula/ssr-1300tr2</a></li>
+                    <li>ASUS XG-C100F 10GbE NIC: <a href="https://www.asus.com/ca-en/networking-iot-servers/wired-networking/all-series/xg-c100f/" target="_blank" rel="noopener noreferrer">asus.com/ca-en/networking-iot-servers/wired-networking/all-series/xg-c100f/</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <div class="floating-navbar" role="navigation" aria-label="On-page tools">
+        <button class="navbar-toggle" aria-controls="navbar-content" aria-expanded="false" title="Toggle On-Page Tools">
+            <span id="toggle-icon">+</span>
+            <span class="sr-only">Toggle On-Page Tools</span>
+        </button>
+        <div class="navbar-content" id="navbar-content">
+            <h4>On-Page Tools</h4>
+            <div class="navbar-tool">
+                <label for="cpu-tdp-input">CPU TDP (Watts per CPU):</label>
+                <input type="number" id="cpu-tdp-input" value="120" min="0" aria-label="Input CPU Thermal Design Power in Watts">
+                <label for="gpu-tdp-input">GPU TDP (Watts per GPU):</label>
+                <input type="number" id="gpu-tdp-input" value="350" min="0" aria-label="Input GPU Thermal Design Power in Watts">
+                <div class="result">Estimated Total TDP: <span id="total-tdp">0W</span></div>
+                <button id="calculate-tdp" aria-label="Calculate Total TDP">Calculate TDP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', mainInit);
+
+        function mainInit() {
+            initializeCostEstimator();
+            initializeTDPCalculator();
+            initializeCharts();
+            initializeNavbarToggle();
+        }
+
+        function initializeCostEstimator() {
+            const inputs = document.querySelectorAll('.interactive-centerpiece input[type="number"]');
+            const mvpTotalCostSpan = document.getElementById('mvp-total-cost');
+            const finalTotalCostSpan = document.getElementById('final-total-cost');
+
+            function calculateCosts() {
+                let mvpTotal = 0;
+                let finalTotal = 0;
+
+                inputs.forEach(input => {
+                    const qty = parseInt(input.value) || 0;
+                    const mvpCostPerUnit = parseFloat(input.dataset.mvpCost) || 0;
+                    const finalCostPerUnit = parseFloat(input.dataset.finalCost) || 0;
+
+                    // Specific logic for RAM to represent modules vs total capacity
+                    if (input.id === 'ram-qty') {
+                        // MVP: 4 modules (128GB)
+                        mvpTotal += Math.min(qty, 4) * mvpCostPerUnit;
+                        // Final: 8 modules (256GB)
+                        finalTotal += Math.min(qty, 8) * finalCostPerUnit;
+                    } else if (input.id === 'cpu-qty') {
+                        // MVP: 1 CPU, Final: 2 CPUs
+                        mvpTotal += Math.min(qty, 1) * mvpCostPerUnit;
+                        finalTotal += Math.min(qty, 2) * finalCostPerUnit;
+                    } else if (input.id === 'gpu-qty') {
+                        // MVP: 1 GPU, Final: 2 GPUs
+                        mvpTotal += Math.min(qty, 1) * mvpCostPerUnit;
+                        finalTotal += Math.min(qty, 2) * finalCostPerUnit;
+                    } else if (input.id === 'nvlink-qty') {
+                        // NVLink only for final build if 2 GPUs are selected
+                        // Cost is added to finalTotal only if gpu-qty is 2
+                        const gpuQty = parseInt(document.getElementById('gpu-qty').value) || 0;
+                        if (gpuQty === 2 && qty >= 1) {
+                            finalTotal += finalCostPerUnit;
+                        }
+                    } else if (input.id === 'case-fan-qty') {
+                        // Case fans: 3 included, 3 more recommended for optimal airflow (total 6 for final)
+                        // MVP: 3 included (cost 0), Final: 3 more (cost 3 * 20)
+                        // If user inputs 6, MVP still considers 3 (cost 0), final considers 6 (cost 3*20)
+                        mvpTotal += 0; // Included with case, no additional cost for MVP
+                        finalTotal += Math.max(0, qty - 3) * finalCostPerUnit; // Only count additional fans
+                    }
+                    else {
+                        mvpTotal += qty * mvpCostPerUnit;
+                        finalTotal += qty * finalCostPerUnit;
+                    }
+                });
+
+                // Adjust for components that are part of the base cost but have specific quantities for MVP/Final
+                // Motherboard is always 1 for both MVP and Final if selected
+                const motherboardQty = parseInt(document.getElementById('motherboard-qty').value) || 0;
+                if (motherboardQty === 0) { // If motherboard is 0, all costs are 0
+                    mvpTotal = 0;
+                    finalTotal = 0;
+                }
+
+                mvpTotalCostSpan.textContent = `CAD $${mvpTotal.toLocaleString()}`;
+                finalTotalCostSpan.textContent = `CAD $${finalTotal.toLocaleString()}`;
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateCosts);
+            });
+
+            // Initial calculation
+            calculateCosts();
+        }
+
+        function initializeTDPCalculator() {
+            const cpuTdpInput = document.getElementById('cpu-tdp-input');
+            const gpuTdpInput = document.getElementById('gpu-tdp-input');
+            const totalTdpSpan = document.getElementById('total-tdp');
+            const calculateTdpBtn = document.getElementById('calculate-tdp');
+
+            function calculateTotalTDP() {
+                const cpuTdp = parseInt(cpuTdpInput.value) || 0;
+                const gpuTdp = parseInt(gpuTdpInput.value) || 0;
+
+                // Get quantities from the cost estimator
+                const cpuQty = parseInt(document.getElementById('cpu-qty').value) || 0;
+                const gpuQty = parseInt(document.getElementById('gpu-qty').value) || 0;
+
+                const totalTDP = (cpuTdp * cpuQty) + (gpuTdp * gpuQty);
+                totalTdpSpan.textContent = `${totalTDP}W`;
+            }
+
+            cpuTdpInput.addEventListener('input', calculateTotalTDP);
+            gpuTdpInput.addEventListener('input', calculateTotalTDP);
+            calculateTdpBtn.addEventListener('click', calculateTotalTDP);
+
+            // Initial calculation
+            calculateTotalTDP();
+        }
+
+        function initializeCharts() {
+            // Helper to get CSS variable values
+            const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+            const primaryTextColor = getCssVar('--primary-text-color');
+            const accentColor1 = getCssVar('--accent-color-1');
+            const accentColor2 = getCssVar('--accent-color-2');
+            const surfaceColor = getCssVar('--surface-color');
+            const borderColor = getCssVar('--border-color');
+
+            // Chart 1: Performance-per-Dollar Comparison
+            const performanceCtx = document.getElementById('performanceValueChart').getContext('2d');
+            new Chart(performanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Dual Xeon E5-2680 v4', 'Modern High-End Consumer CPU'],
+                    datasets: [{
+                        label: 'Performance Points per Dollar (Illustrative)',
+                        data: [200, 50], // Illustrative data based on PDF's claims
+                        backgroundColor: [accentColor1, accentColor2],
+                        borderColor: [accentColor1, accentColor2],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Multi-Core Performance Value Comparison',
+                            color: primaryTextColor,
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        legend: {
+                            display: false // Hide legend as there's only one dataset
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Performance Points / Dollar',
+                                color: primaryTextColor
+                            },
+                            ticks: {
+                                color: primaryTextColor
+                            },
+                            grid: {
+                                color: borderColor
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: primaryTextColor
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Undervolting Impact
+            const undervoltingCtx = document.getElementById('undervoltingImpactChart').getContext('2d');
+            new Chart(undervoltingCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'GPU Undervolting Impact',
+                        data: [
+                            { x: 350, y: 100, label: 'Stock Settings' },
+                            { x: 300, y: 98, label: 'Slight Undervolt' },
+                            { x: 250, y: 95, label: 'Moderate Undervolt' },
+                            { x: 200, y: 85, label: 'Aggressive Undervolt' }
+                        ],
+                        backgroundColor: accentColor1,
+                        borderColor: accentColor1,
+                        borderWidth: 2,
+                        pointRadius: 6,
+                        pointBackgroundColor: accentColor1,
+                        pointBorderColor: surfaceColor,
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'GPU Undervolting Impact: Power vs. Performance',
+                            color: primaryTextColor,
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const point = context.raw;
+                                    return `${point.label}: ${point.x}W, ${point.y}% Performance`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Power Consumption (Watts)',
+                                color: primaryTextColor
+                            },
+                            ticks: {
+                                color: primaryTextColor
+                            },
+                            grid: {
+                                color: borderColor
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Relative Performance (%)',
+                                color: primaryTextColor
+                            },
+                            ticks: {
+                                color: primaryTextColor
+                            },
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: borderColor
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeNavbarToggle() {
+            const navbar = document.querySelector('.floating-navbar');
+            const toggleButton = document.querySelector('.navbar-toggle');
+            const toggleIcon = document.getElementById('toggle-icon');
+            const navbarContent = document.getElementById('navbar-content');
+
+            // Set initial aria-expanded state based on CSS transform
+            const isExpanded = navbar.classList.contains('expanded');
+            toggleButton.setAttribute('aria-expanded', isExpanded);
+            toggleIcon.textContent = isExpanded ? '-' : '+';
+
+            toggleButton.addEventListener('click', () => {
+                const currentlyExpanded = navbar.classList.toggle('expanded');
+                toggleButton.setAttribute('aria-expanded', currentlyExpanded);
+                toggleIcon.textContent = currentlyExpanded ? '-' : '+';
+            });
+
+            // Close navbar if clicking outside (optional, but good for UX)
+            document.addEventListener('click', (event) => {
+                if (!navbar.contains(event.target) && !toggleButton.contains(event.target)) {
+                    navbar.classList.remove('expanded');
+                    toggleButton.setAttribute('aria-expanded', 'false');
+                    toggleIcon.textContent = '+';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
