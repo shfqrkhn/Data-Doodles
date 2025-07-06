@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Eris Protocol: Master the Underworld</title>
+    <style>
+        /* CSS Custom Properties */
+        :root {
+            --color-background: #1A1A2E; /* Deep Indigo */
+            --color-surface: #2E3A59;    /* Dark Slate Blue */
+            --color-text-primary: #E0E0E0; /* Light Gray */
+            --color-text-secondary: #A0A0A0; /* Medium Gray */
+            --color-accent-1: #FF6B6B;   /* Vibrant Red/Crimson */
+            --color-accent-2: #4ECDC4;   /* Teal/Aqua */
+            --color-accent-3: #6A5ACD;   /* Slate Blue/Purple */
+            --color-border: rgba(255, 255, 255, 0.1);
+            --spacing-xs: 0.4rem; /* Slightly more compact */
+            --spacing-sm: 0.8rem; /* Slightly more compact */
+            --spacing-md: 1.2rem; /* Slightly more compact */
+            --spacing-lg: 1.8rem; /* Slightly more compact */
+            --spacing-xl: 2.5rem;
+            --font-size-base: 0.95rem; /* Slightly smaller base font */
+            --font-size-sm: 0.825rem;
+            --font-size-md: 1.05rem;
+            --font-size-lg: 1.4rem;
+            --font-size-xl: 1.8rem;
+            --font-size-xxl: 2.2rem;
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            line-height: 1.5; /* Slightly more compact line height */
+            font-size: var(--font-size-base);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: serif;
+            color: var(--color-accent-1);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.2;
+        }
+
+        h1 { font-size: var(--font-size-xxl); text-align: center; margin-top: var(--spacing-lg); }
+        h2 { font-size: var(--font-size-xl); margin-top: var(--spacing-xl); }
+        h3 { font-size: var(--font-size-lg); margin-top: var(--spacing-md); }
+        h4 { font-size: var(--font-size-md); margin-top: var(--spacing-sm); }
+
+        p {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        a {
+            color: var(--color-accent-2);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover, a:focus {
+            color: var(--color-text-primary);
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            margin-left: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            padding-left: var(--spacing-sm); /* Ensure list markers are visible */
+        }
+
+        li {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        /* Layout & Containers */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+            flex-grow: 1;
+            width: 100%; /* Ensure container takes full width available */
+        }
+
+        .card {
+            background-color: var(--color-surface);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden; /* Prevent content inside card from overflowing */
+        }
+
+        .banner {
+            background: linear-gradient(135deg, var(--color-background), var(--color-accent-3));
+            padding: var(--spacing-xl) var(--spacing-md);
+            text-align: center;
+            border-bottom: 2px solid var(--color-accent-1);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .banner h1 {
+            font-size: var(--font-size-xxl);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .banner p {
+            font-size: var(--font-size-md);
+            color: var(--color-text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto; /* Allows tables to scroll horizontally on small screens */
+            margin-bottom: var(--spacing-md);
+            border-radius: 8px;
+            border: 1px solid var(--color-border); /* Add border to wrapper for consistent look */
+        }
+
+        table {
+            width: 100%;
+            min-width: 500px; /* Ensure table content doesn't become unreadable */
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        th, td {
+            border: 1px solid var(--color-border);
+            padding: var(--spacing-sm);
+            text-align: left;
+            vertical-align: top;
+            white-space: normal; /* Allow text to wrap within cells */
+        }
+
+        th {
+            background-color: var(--color-accent-3);
+            color: var(--color-text-primary);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Specific Content Styling */
+        blockquote {
+            border-left: 4px solid var(--color-accent-2);
+            padding-left: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        /* Interactive Centerpiece */
+        .interactive-centerpiece {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-md);
+            background-color: var(--color-surface);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .build-summary {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            border: 1px dashed var(--color-accent-2);
+            font-size: var(--font-size-md);
+            color: var(--color-accent-2);
+            text-align: center;
+        }
+
+        .biome-details {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .biome-details summary {
+            background-color: var(--color-accent-3);
+            color: var(--color-text-primary);
+            padding: var(--spacing-sm);
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+            font-weight: 600;
+            font-size: var(--font-size-md);
+            transition: background-color 0.3s ease;
+            display: block; /* For full touch target */
+            position: relative;
+            padding-right: var(--spacing-xl); /* Space for arrow */
+        }
+
+        .biome-details summary:hover, .biome-details summary:focus {
+            background-color: var(--color-accent-1);
+        }
+
+        .biome-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .biome-details summary::after {
+            content: '+';
+            position: absolute;
+            right: var(--spacing-sm);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: var(--font-size-lg);
+            line-height: 1;
+            transition: transform 0.2s ease;
+        }
+
+        .biome-details[open] summary::after {
+            content: '-';
+            transform: translateY(-50%) rotate(0deg);
+        }
+
+        .biome-content {
+            padding: var(--spacing-sm);
+            background-color: rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border: 1px solid var(--color-border);
+            border-top: none;
+        }
+
+        .acquisition-item {
+            display: flex;
+            align-items: flex-start; /* Align items to top for multi-line labels */
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .acquisition-item input[type="checkbox"] {
+            margin-right: var(--spacing-xs);
+            min-width: 24px; /* Ensure touch target */
+            min-height: 24px; /* Ensure touch target */
+            accent-color: var(--color-accent-2);
+            flex-shrink: 0; /* Prevent checkbox from shrinking */
+            margin-top: 0.2rem; /* Align checkbox with first line of text */
+        }
+
+        .acquisition-item label {
+            cursor: pointer;
+            color: var(--color-text-primary);
+            font-size: var(--font-size-sm);
+            flex-grow: 1;
+            padding: var(--spacing-xs); /* Add padding for larger touch target */
+        }
+
+        .acquisition-item input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: var(--color-text-secondary);
+        }
+
+        /* MythBusting / FAQ */
+        details {
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-sm);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mythbusting-faq summary {
+            padding: var(--spacing-sm);
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--color-text-primary); /* Ensures #E0E0E0 on #2E3A59 for FAQ summaries */
+            outline: none;
+            list-style: none; /* Hide default marker */
+            position: relative;
+            padding-right: var(--spacing-xl); /* Space for custom marker */
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: '▼'; /* Down arrow */
+            position: absolute;
+            right: var(--spacing-sm);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: var(--font-size-sm);
+            transition: transform 0.2s ease;
+        }
+
+        details[open] summary::after {
+            transform: translateY(-50%) rotate(180deg); /* Up arrow */
+        }
+
+        .details-content {
+            padding: var(--spacing-sm);
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+        }
+
+        /* Floating Navbar */
+        .floating-navbar-toggle {
+            position: fixed;
+            bottom: calc(var(--spacing-lg) + 50px); /* Above the navbar */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-accent-1);
+            color: var(--color-text-primary);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: var(--font-size-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            outline: none; /* Remove default focus outline */
+        }
+
+        .floating-navbar-toggle:hover,
+        .floating-navbar-toggle:focus {
+            background-color: var(--color-accent-2);
+            transform: translateX(-50%) scale(1.05);
+        }
+        
+        .floating-navbar-toggle:focus-visible { /* For keyboard navigation */
+            outline: 2px solid var(--color-text-primary);
+            outline-offset: 2px;
+        }
+
+
+        .floating-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--color-surface);
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+            padding: var(--spacing-sm);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-height: 90vh; /* Limit height for mobile */
+            overflow-y: auto; /* Enable scrolling if content is too tall */
+        }
+
+        .floating-navbar.open {
+            transform: translateY(0);
+        }
+
+        .navbar-content {
+            width: 100%;
+            max-width: 800px; /* Limit width of content inside navbar */
+            padding-bottom: env(safe-area-inset-bottom); /* For iOS safe areas */
+        }
+
+        .navbar-tool-section {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            border: 1px dashed var(--color-accent-3);
+        }
+
+        .navbar-tool-section h3 {
+            color: var(--color-accent-2);
+            margin-top: 0;
+            margin-bottom: var(--spacing-sm);
+            text-align: center;
+        }
+
+        .navbar-tool-section label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-primary);
+        }
+
+        .navbar-tool-section input[type="number"],
+        .navbar-tool-section select {
+            width: 100%;
+            padding: var(--spacing-xs);
+            margin-bottom: var(--spacing-sm);
+            border-radius: 4px;
+            border: 1px solid var(--color-border);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-sm);
+        }
+
+        .navbar-tool-section button {
+            background-color: var(--color-accent-1);
+            color: var(--color-text-primary);
+            border: none;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            transition: background-color 0.3s ease;
+            width: 100%;
+            min-height: 48px; /* Touch target */
+        }
+
+        .navbar-tool-section button:hover,
+        .navbar-tool-section button:focus {
+            background-color: var(--color-accent-2);
+        }
+
+        .tool-output {
+            margin-top: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid var(--color-accent-2);
+            color: var(--color-text-primary);
+            font-size: var(--font-size-sm);
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
+            word-wrap: break-word; /* Break long words */
+        }
+
+        /* Sources Section */
+        .sources-section {
+            margin-top: var(--spacing-xl);
+            text-align: left;
+        }
+
+        .sources-section ul {
+            list-style-type: disc;
+            margin-left: var(--spacing-md);
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 768px) {
+            :root {
+                --font-size-base: 1rem;
+                --font-size-lg: 1.5rem;
+                --font-size-xl: 2rem;
+                --font-size-xxl: 2.5rem;
+            }
+
+            .container {
+                padding: var(--spacing-lg);
+            }
+
+            .card {
+                padding: var(--spacing-lg);
+            }
+
+            .banner h1 {
+                font-size: var(--font-size-xxl);
+            }
+
+            .banner p {
+                font-size: var(--font-size-md);
+            }
+
+            /* Multi-column layout for larger screens */
+            .content-columns {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: var(--spacing-lg);
+            }
+
+            .deep-dive-modules .card {
+                grid-column: span 1;
+            }
+
+            .mythbusting-faq .card {
+                grid-column: span 1;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            :root {
+                --font-size-base: 1.05rem;
+                --font-size-lg: 1.6rem;
+                --font-size-xl: 2.2rem;
+                --font-size-xxl: 3rem;
+            }
+            .content-columns {
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            }
+        }
+
+        /* Accessibility: Focus States */
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        a:focus-visible,
+        summary:focus-visible {
+            outline: 2px solid var(--color-accent-2);
+            outline-offset: 2px;
+        }
+
+        /* Ensure no text truncation on mobile for critical elements */
+        h1, h2, h3, h4, h5, h6,
+        .build-summary,
+        .biome-details summary,
+        .navbar-tool-section h3,
+        .navbar-tool-section button,
+        .tool-output {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip; /* No ellipsis for these, allow wrapping */
+        }
+    </style>
+</head>
+<body>
+    <header class="banner">
+        <h1>The Eris Protocol: Master the Underworld</h1>
+        <p>A Definitive Guide for Hades' Most Consistent Build</p>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>Unleash the Stormfront</h2>
+            <p>Dominate the Underworld with the Adamant Rail's Aspect of Eris. This guide provides a systematic, low-RNG blueprint for consistent high-heat clears, leveraging core mechanics and optimized decision-making.</p>
+        </section>
+
+        <section class="card">
+            <h2>Part 1: Your First Steps & Permanent Progression</h2>
+            <p>Before you can master a build, you must learn to walk. Your initial runs should focus on two key areas:</p>
+            <ul>
+                <li>**Learning Enemy Patterns:** Get a feel for how enemies move and attack in each biome. Don't be afraid to just dodge and observe in new encounters.</li>
+                <li>**Gathering Key Resources:** Focus on collecting **Chthonic Keys** (🔑), **Nectar** (🍯), and **Darkness** (🔮). These are crucial for permanent progression in the House of Hades.</li>
+            </ul>
+
+            <h3>Understanding Irreversible Decisions (and What You Can Undo)</h3>
+            <p>Most choices in Hades can be reversed or re-farmed, but some have permanent consequences or are very time-consuming to undo.</p>
+
+            <h4>Decisions You CANNOT Easily Reverse:</h4>
+            <ul>
+                <li>**Spending Rare Resources (Titan Blood, Diamonds, Ambrosia):** While you can always farm more, spending these on a weapon aspect or cosmetic you later regret can be a major setback. Spend wisely! This guide will show you where to get the most value.</li>
+                <li>**Gifting Nectar & Ambrosia:** Once you give a gift to a character, you cannot take it back.</li>
+                <li>**House Contractor Cosmetics:** Purchases like themes and decorations are permanent and offer no gameplay advantage. Prioritize functional upgrades before cosmetics.</li>
+            </ul>
+
+            <h4>Choices You CAN Reverse:</h4>
+            <ul>
+                <li>**Mirror of Night Talents:** Don't worry about mistakes here. You can reset any individual talent choice at the cost of one Chthonic Key, allowing you to experiment freely.</li>
+            </ul>
+
+            <h3>Essential Items for This Guide: Your First Nectar Gifts</h3>
+            <p>Your immediate goal is to acquire specific **Keepsakes**. Give your first bottle of Nectar (🍯) to the following characters as soon as you meet them:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Giver</th>
+                            <th>How to Get</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>**Thunder Signet** (Keepsake)</td>
+                            <td>Zeus</td>
+                            <td>Zeus appears as a Boon chamber reward (⚡ symbol). Gift him Nectar.</td>
+                        </tr>
+                        <tr>
+                            <td>**Conch Shell** (Keepsake)</td>
+                            <td>Poseidon</td>
+                            <td>Poseidon appears as a Boon chamber reward (🔱 symbol). Gift him Nectar.</td>
+                        </tr>
+                        <tr>
+                            <td>**Pom Blossom** (Keepsake)</td>
+                            <td>Persephone</td>
+                            <td>You'll meet her automatically by progressing the main story. Gift her Nectar.</td>
+                        </tr>
+                        <tr>
+                            <td>**Evergreen Acorn** (Keepsake)</td>
+                            <td>Eurydice</td>
+                            <td>Found in a chamber with a music note (🎵) in Asphodel. Gift her Nectar after her song.</td>
+                        </tr>
+                        <tr>
+                            <td>**Lucky Tooth** (Keepsake)</td>
+                            <td>Skelly</td>
+                            <td>This is the training dummy in the Arsenal Room (your starting area). Gift him Nectar.</td>
+                        </tr>
+                        <tr>
+                            <td>**Companion Battie**</td>
+                            <td>Megaera</td>
+                            <td>After she appears in the House of Hades, gift her Nectar until her heart gauge is full. Eventually, a special "favor" event will trigger. Complete it, then gift her Ambrosia to receive Battie. (This is a longer-term goal compared to the Keepsakes, which you'll get quickly.)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Part 2: Building Your Permanent Power Base</h2>
+            <p>Between runs, you'll invest your hard-earned resources into permanent upgrades in the House of Hades. Focus on these two critical areas.</p>
+
+            <h3>A. The House Contractor: Foundational Upgrades</h3>
+            <p>This shady figure lets you purchase upgrades for the Underworld. Prioritize these with your **Gemstones** (💎):</p>
+            <ul>
+                <li>**Fated List of Minor Prophecies:** Your **first** purchase. It provides goals that award large amounts of essential resources.</li>
+                <li>**Fountain Chambers (All Biomes):** Guaranteed healing rooms are invaluable, especially at high difficulty. Purchase Tartarus first, then Asphodel, then Elysium.</li>
+                <li>**Regional Keepsake Collection:** This is the **absolute cornerstone** of this strategy. It allows you to switch keepsakes between biomes, which is how you will force this build into existence.</li>
+                <li>**Rod of Fishing:** A minor but useful upgrade that lets you fish for extra resources in designated spots.</li>
+                <li>**Boons - Rare Crop / Epic Crop:** (Later-game purchases) These passively increase the rarity of boons you encounter, further optimizing your runs.</li>
+            </ul>
+
+            <h3>B. The Mirror of Night: Your Core Talents</h3>
+            <p>This is where you spend your **Darkness** (🔮) to gain permanent power. Use your **Keys** (🔑) to unlock all 24 talents. Here are the recommended choices for this build, roughly in order of priority for a new player:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Talent</th>
+                            <th>Rationale for the Build</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>**Death Defiance**</td>
+                            <td>Offers three full revives. Crucial for surviving difficult boss fights and pushing further. Prioritize getting at least one rank early.</td>
+                        </tr>
+                        <tr>
+                            <td>**Greater Reflex**</td>
+                            <td>A single point grants an extra dash. Non-negotiable for mobility, survivability, and proccing dash boons.</td>
+                        </tr>
+                        <tr>
+                            <td>**Shadow Presence**</td>
+                            <td>Provides consistent backstab damage that synergizes with your high mobility and the Rail's dash-strike.</td>
+                        </tr>
+                        <tr>
+                            <td>**Chthonic Vitality**</td>
+                            <td>Provides reliable, passive healing after every single encounter, adding great sustain.</td>
+                        </tr>
+                        <tr>
+                            <td>**Deep Pockets**</td>
+                            <td>Starts the run with Obols (gold), ensuring you can afford an early boon or item from Charon.</td>
+                        </tr>
+                        <tr>
+                            <td>**Boiling Blood**</td>
+                            <td>An easy, passive damage boost against any enemy with your Cast stone stuck in them.</td>
+                        </tr>
+                        <tr>
+                            <td>**Infernal Soul**</td>
+                            <td>More Cast stones means you can apply the Boiling Blood debuff to more enemies at once. (Ensure you pick this over Stygian Soul, which is less effective for this build.)</td>
+                        </tr>
+                        <tr>
+                            <td>**High Confidence**</td>
+                            <td>A core damage component. Grants a significant damage bonus when you are healthy, rewarding skilled play.</td>
+                        </tr>
+                        <tr>
+                            <td>**Privileged Status**</td>
+                            <td>The central damage multiplier of the entire build. Grants a massive +40% damage bonus to foes afflicted with two or more status curses. Our build applies two curses constantly.</td>
+                        </tr>
+                        <tr>
+                            <td>**Dark Foresight**</td>
+                            <td>Increases the chance for "gold laurel" doors (Boons, Hammers, etc.), giving you more opportunities to build your engine faster.</td>
+                        </tr>
+                        <tr>
+                            <td>**God's Pride**</td>
+                            <td>Increases the chance for boons to be of Epic rarity, which provides higher base damage and better scaling.</td>
+                        </tr>
+                        <tr>
+                            <td>**Fated Persuasion**</td>
+                            <td>Provides dice to re-roll boon offerings. This is your primary tool for filtering through unwanted boons to find the exact ones you need.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card interactive-centerpiece">
+            <h2>Run Progression Simulator: Track Your Build</h2>
+            <p class="build-summary" id="build-summary">Start your run to track your build progression!</p>
+
+            <div class="biome-details">
+                <details>
+                    <summary>Tartarus (Biome 1) - Forcing Zeus</summary>
+                    <div class="biome-content">
+                        <h4>Expected Acquisitions:</h4>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="tartarus-zeus-attack" data-boon="Zeus Attack: Lightning Strike">
+                            <label for="tartarus-zeus-attack">Zeus Attack: **Lightning Strike** (MUST-HAVE)</label>
+                        </div>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="tartarus-static-discharge" data-boon="Zeus Boon: Static Discharge">
+                            <label for="tartarus-static-discharge">Zeus Boon: **Static Discharge** (HIGH PRIORITY)</label>
+                        </div>
+                        <p>Remember to equip **Thunder Signet** (Zeus's Keepsake) before starting the run.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="biome-details">
+                <details>
+                    <summary>Asphodel (Biome 2) - Forcing Poseidon</summary>
+                    <div class="biome-content">
+                        <h4>Expected Acquisitions:</h4>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="asphodel-poseidon-dash" data-boon="Poseidon Dash: Tidal Dash">
+                            <label for="asphodel-poseidon-dash">Poseidon Dash: **Tidal Dash** (MUST-HAVE)</label>
+                        </div>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="asphodel-sea-storm" data-boon="Duo Boon: Sea Storm">
+                            <label for="asphodel-sea-storm">Duo Boon: **Sea Storm** (SEEK RELENTLESSLY)</label>
+                        </div>
+                        <p>Remember to switch to **Conch Shell** (Poseidon's Keepsake) after the Tartarus boss.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="biome-details">
+                <details>
+                    <summary>Elysium (Biome 3) - Solidifying the Engine</summary>
+                    <div class="biome-content">
+                        <h4>Expected Acquisitions:</h4>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="elysium-aphrodite-special" data-boon="Aphrodite Special: Heartbreak Flourish">
+                            <label for="elysium-aphrodite-special">Aphrodite Special: **Heartbreak Flourish** (FINAL CORE PIECE)</label>
+                        </div>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="elysium-hermes-combo" data-boon="Hermes Combo: Hyper Sprint + Rush Delivery">
+                            <label for="elysium-hermes-combo">Hermes Combo: **Hyper Sprint + Rush Delivery** (LUXURY)</label>
+                        </div>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="elysium-zeus-lux" data-boon="Zeus Boons: Double Strike/Splitting Bolt">
+                            <label for="elysium-zeus-lux">Zeus Boons: **Double Strike/Splitting Bolt** (LUXURY)</label>
+                        </div>
+                        <p>Consider switching to **Pom Blossom** (if strong) or **Evergreen Acorn** (if defensive) after the Asphodel boss.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="biome-details">
+                <details>
+                    <summary>Temple of Styx (Biome 4) - Final Polish</summary>
+                    <div class="biome-content">
+                        <h4>Expected Acquisitions:</h4>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="styx-final-poms" data-boon="Poms on Core Boons">
+                            <label for="styx-final-poms">Poms on Core Boons (e.g., Sea Storm, Lightning Strike)</label>
+                        </div>
+                        <div class="acquisition-item">
+                            <input type="checkbox" id="styx-other-lux" data-boon="Other Luxury Boons/Hammers">
+                            <label for="styx-other-lux">Other Luxury Boons/Hammers (e.g., Cluster Bomb, Rocket Bomb)</label>
+                        </div>
+                        <p>Consider switching to **Evergreen Acorn** for the final boss if you haven't already.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Part 4: Mastering the Build - Combat & Contingencies</h2>
+
+            <h3>The Eris Buff & Combat Loop</h3>
+            <p>The Aspect of Eris's power comes from its unique buff:</p>
+            <ul>
+                <li>**Buff Activation:** Fire your Special at a nearby wall or directly at your feet.</li>
+                <li>**Absorb:** Immediately dash into the explosion's radius to absorb the Eris buff, granting a **+75% global damage bonus for 4 seconds**.</li>
+                <li>**Annihilate:** While buffed, hold down the attack button and begin aggressively dash-striking into and through enemies. Your **Lightning Strike** Attack, **Tidal Dash**, and **Heartbreak Flourish** Special will rapidly apply curses and deal massive damage.</li>
+                <li>**Advanced Technique:** To maintain 100% buff uptime, weave your Special into your Rail's reload animation; firing the Special will cancel the reload, letting you keep up the pressure.</li>
+            </ul>
+
+            <h3>Daedalus Hammer Priority</h3>
+            <p>Hammers modify your weapon significantly. Prioritize these for the Eris Rail:</p>
+            <ul>
+                <li>**Cluster Bomb:** The single most powerful upgrade. Modifies your Special to fire 5 bombs, making it incredibly easy to absorb the Eris buff consistently and clear rooms.</li>
+                <li>**Rocket Bomb:** Transforms your Special into a fast, direct-fire rocket. The combination of **Cluster Bomb + Rocket Bomb** is the build's ultimate form, turning your Special into an absolute powerhouse.</li>
+                <li>**Triple Bomb:** A solid alternative that allows the Special to be fired 3 times in rapid succession, still excellent for Eris buff uptime.</li>
+            </ul>
+
+            <h3>Strategic Pivots (When RNG Resists)</h3>
+            <p>Even with keepsake forcing, RNG can sometimes be stubborn. Here's how to adapt:</p>
+            <ul>
+                <li>**If Sea Storm Refuses to Appear:** Pivot to a **Pure Zeus build**. Abandon the hunt for Poseidon's Duo Boon and focus entirely on stacking Zeus's secondary boons (**Double Strike, Splitting Bolt, Stormy Judgment**) to maximize raw lightning damage.</li>
+                <li>**If You Cannot Find a Good Hammer:** Re-classify your Special as a pure utility tool. Its only purpose now is to be fired at your feet every 4 seconds to activate the Eris buff and apply the Weak curse. Focus on your primary attack damage and Dash instead.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Part 5: Optimizing Your Build & Beyond</h2>
+            <p>Once you have the core build down, these points help you push its power even further.</p>
+
+            <h3>1. Optimizing Your "Filler" God Slots</h3>
+            <p>The core guide correctly locks in Zeus, Poseidon, and Aphrodite. However, you will inevitably encounter other gods. Planning for them can lead to significant gains.</p>
+
+            <h4>The Case for Artemis (Best "Fourth God"):</h4>
+            <p>Artemis is arguably the best "fourth god" for this build. Her boons provide a multiplicative damage increase, which is exactly what you want.</p>
+            <ul>
+                <li>**Pressure Points:** A chance to deal critical damage on any hit. Since this build hits so many times per second with Zeus's lightning, this adds a substantial, independent layer of damage.</li>
+                <li>**Support Fire:** Adds a seeking arrow every time you Attack, Dash, or use your Special. Each arrow is another instance of damage that can trigger the effects of Sea Storm.</li>
+                <li>**Legendary Boon - Fully Loaded:** Getting +2 Cast stones from Artemis is a direct upgrade to the Infernal Soul you already have, giving you more ammo for Boiling Blood.</li>
+                <li>**How to Integrate:** If you see an Artemis door in Elysium or Styx and your core build is already online, taking it is almost always the correct choice.</li>
+            </ul>
+
+            <h3>2. Choosing the Right Call (God Gauge)</h3>
+            <p>The guide doesn't specify a Call, which is a major source of damage and utility.</p>
+            <ul>
+                <li>**Best Defensive/Utility Call: Aphrodite's Aid.** The Charm effect is one of the most powerful defensive tools in the game. A max-gauge call will neutralize threatening foes or bosses for a long duration, allowing you to deal uninterrupted damage safely.</li>
+                <li>**Best Offensive Call: Zeus's Aid.** Fits the build perfectly. It charges quickly and adds a large amount of lightning damage, synergizing with your other Zeus boons like Static Discharge and Double Strike.</li>
+            </ul>
+
+            <h3>3. The Eris Aspect Investment Itself (The Biggest Improvement)</h3>
+            <p>This is the most crucial point for maximizing the build's power. **Investing Titan Blood into the Aspect of Eris is the single most important upgrade you can make for this build.**</p>
+            <ul>
+                <li>**What it does:** Each level of investment increases the duration of the +75% damage buff you get from absorbing your Special's blast.</li>
+                <li>**The Gain:** At Level 1, the buff lasts 4 seconds. At max Level 5, it lasts 8 seconds.</li>
+                <li>**Why it Matters:** Doubling the duration means you only have to refresh the buff half as often. This results in a massive increase in "up-time" where you are just holding down the attack button and dashing. It's a colossal boost to both your real-world DPS and your mental focus. This is the highest priority for your Titan Blood and has no diminishing returns until it is maxed out.</li>
+            </ul>
+
+            <h3>4. Advanced Companion Strategy</h3>
+            <p>Companion Battie is excellent for front-loading damage. However, for higher Heat levels, an alternative can be even better.</p>
+            <ul>
+                <li>**Companion Shady (Skelly):** Summons a distraction that draws enemy fire. This is invaluable in chaotic rooms, especially the fight against Theseus and Asterius or the final boss. "Shady" creates breathing room for you to safely reload and re-apply your Eris buff. It's a strategic choice that trades burst damage for control and safety.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Part 6: The Endgame - The Pact of Punishment & Resource Farming</h2>
+            <p>After your first successful escape, you will unlock the Pact of Punishment. This allows you to add "Heat" to your runs to earn new rewards from bosses.</p>
+
+            <h3>Scaling the Heat Safely</h3>
+            <ul>
+                <li>**"Free" Heat:** Start by adding ranks to **Forced Overtime** (increases enemy speed/attack rate) and **Damage Control** (enemies have temporary armor). This build's high mobility and fire rate make these pacts relatively easy to handle.</li>
+                <li>**Calculated Risks:** **Extreme Measures** (up to Rank 3, which reworks boss fights) and **Underworld Customs** (cannot acquire certain boon types again after selling/trading) are safe sources of Heat for this build once you're comfortable. Avoid Extreme Measures 4 (the final boss) until you are very confident.</li>
+                <li>**Nuanced Pact Choices:**
+                    <ul>
+                        <li>**Tight Deadline:** This build is incredibly fast. Once you're comfortable with boss fights, you can add all three ranks of Tight Deadline for 6 "free" Heat with almost no change in difficulty.</li>
+                        <li>**Benefits Oversight:** Level 1 of this pact (foes gain one pip of armor) is trivialized by the high-frequency chain lightning hits, which strip armor almost instantly.</li>
+                        <li>**Approval Process:** This pact, which limits your boon choices, should be one of the *very last* Pacts you ever take. It directly conflicts with the guide's core philosophy of forcing specific boons into existence and can easily break a run.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Comprehensive Resource Farming Guide</h3>
+
+            <h4>Titan Blood (For upgrading weapon Aspects)</h4>
+            <ul>
+                <li>**Primary Method:** Defeating the first and last boss on a *new Heat level* with *each weapon*.</li>
+                <li>**Other Sources:** First-time clears with each weapon, completing Prophecies, buying from the Wretched Broker (for 1 Ambrosia) or Styx Shop (for 1200 Obols), and fishing in the final boss area.</li>
+                <li>**Irreversible Note:** Spending Titan Blood is a major time investment. Use this guide to invest in the Aspect of Eris first before spending it on other aspects you may not enjoy.</li>
+            </ul>
+
+            <h4>Diamonds (For House Contractor upgrades)</h4>
+            <ul>
+                <li>**Primary Method:** Defeating the Bone Hydra (second boss) on a *new Heat level* with *each weapon*.</li>
+                <li>**Other Sources:** First-time clears, completing Prophecies, buying from the Broker or Styx Shop (for 1000 Obols), and fishing on the surface.</li>
+                <li>**Irreversible Note:** Prioritize functional upgrades (like the Regional Keepsake Collection) from the House Contractor. Cosmetic items are a permanent resource sink with no gameplay benefit.</li>
+            </ul>
+
+            <h4>Ambrosia (For relationships & companions)</h4>
+            <ul>
+                <li>**Primary Method:** Defeating Theseus and Asterius (third boss) on a *new Heat level* with *each weapon*.</li>
+                <li>**Other Sources:** First-time clears and completing the majority of the Fated List of Minor Prophecies.</li>
+                <li>**Irreversible Note:** Do not trade Ambrosia for Titan Blood at the Wretched Broker unless you have a massive surplus. Ambrosia is rarer and more important for late-game story progression.</li>
+            </ul>
+
+            <h3>General Farming Tips</h3>
+            <ul>
+                <li>**Dark Thirst:** Always use the weapon with the purple glow in the Arsenal Room for a **20% bonus** to Darkness and Gemstones.</li>
+                <li>**Boons:** Look for Poseidon's **"Ocean's Bounty"** and Chaos boons that increase your resource gains.</li>
+                <li>**Chambers:** Prioritize chambers with Infernal Troves that offer Gemstones or Darkness.</li>
+                <li>**Fishing:** If you have the Rod of Fishing from the House Contractor, always check for fishing spots when entering a room; they provide valuable bonus resources.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Part 7: Advanced Mastery: Nuance & Execution</h2>
+            <p>For players looking to push this build to its absolute limit, these points focus on in-run mastery and subtle decision-making that can provide marginal yet consistent gains.</p>
+
+            <h3>1. Chamber Pathing Mastery (Beyond Just Boons)</h3>
+            <ul>
+                <li>**Resource Opportunity Cost:** Evaluate the opportunity cost of each door. Sometimes, taking a Darkness door or a Gemstone trove, especially in Tartarus, if it leads to a shop where you can buy a Pom, a key core boon, or a helpful Charon's Well item, is more valuable than an early god door that doesn't immediately fit the build. This requires deeper knowledge of shop inventories and resource needs.</li>
+                <li>**Avoiding "Dead Ends":** Learn to recognize when a particular god door or hammer room isn't going to help the current state of your build. Consciously choose a less optimal (but not detrimental) path to preserve re-rolls or ensure access to a needed item later.</li>
+                <li>**Charon's Wells:** These are often overlooked. Knowing which well upgrades are beneficial for the build at specific stages (e.g., increased Special damage for Eris buff consistency, or extra Obols to guarantee a shop purchase) can be a subtle but impactful gain.</li>
+            </ul>
+
+            <h3>2. Shop Management & Charon's Obols</h3>
+            <ul>
+                <li>**Strategic Spending:** Beyond just buying core boons, knowing when to buy a Pom (and for which boon), a Centaur Heart (Max HP), or a specific well item, versus saving for a potential mid-biome shop or even a Styx shop item (like Titan Blood or Diamonds), is a critical skill. Leverage Deep Pockets perfectly.</li>
+                <li>**Charon's Trial:** For expert players, intentionally losing to Charon in his shop (after securing all needed purchases) grants a valuable 300 Obols and a free item. This is a high-risk, high-reward maneuver for those confident in their combat abilities.</li>
+            </ul>
+
+            <h3>3. Enemy Behavior Exploitation</h3>
+            <ul>
+                <li>**Privileged Status Uptime:** While the guide emphasizes applying two curses, a truly optimized player will have near 100% uptime on Privileged Status against every single enemy. This means quick re-application of Jolted (from Attack) and Weak (from Special/Dash) even in chaotic scenarios.</li>
+                <li>**Backstab Positioning:** Shadow Presence is a core Mirror talent. An expert player will constantly be positioning themselves for backstabs, especially against armored foes or bosses, to maximize this "free" damage. The Rail's dash-strike makes this relatively easy to execute.</li>
+                <li>**Boss Phase Knowledge:** Knowing exactly when bosses become vulnerable, when to hold your Call, and when to unleash all available damage is key to faster clears and less damage taken. For example, using Aphrodite's Call to charm Theseus precisely when he's vulnerable after Asterius is down, or saving Zeus's Aid for a specific boss phase.</li>
+            </ul>
+
+            <h3>4. Death Defiance Management (and Resourceful Revival)</h3>
+            <ul>
+                <li>**Avoiding Unnecessary Deaths:** This sounds obvious, but a master player conserves Death Defiances. This isn't just about not getting hit; it's about making smart decisions regarding risk-taking and when to disengage or use defensive options.</li>
+                <li>**Death Defiance Recovery:** Prioritizing Death Defiance recovery items from shops, Charon's Wells, or Patroclus, especially before a difficult boss, is a significant "gain" in terms of run consistency and safety at higher Heat levels.</li>
+            </ul>
+
+            <h3>5. Weapon Alternative Usage</h3>
+            <ul>
+                <li>While the focus is on the Attack, remember your Cast. With Infernal Soul and Boiling Blood, a well-placed Cast can significantly burst down a single, tough enemy or provide crucial damage against a boss if your main Attack is temporarily inconvenient due to enemy positioning or invulnerability frames.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Part 8: Advanced Mastery: Optimal Micro-Decisions</h2>
+            <p>These final points represent the highly refined decision-making that can further enhance runs for the most experienced players, recognizing subtle synergies and situational advantages.</p>
+
+            <h3>1. Understanding God Pool Sizes & Duo Boon Chances (Subtle Meta-Knowledge)</h3>
+            <ul>
+                <li>While you force Zeus, Poseidon, and Aphrodite, understanding that having *fewer* gods in your active pool increases the chances of getting specific boons from the gods you *do* have can influence minor early decisions. For instance, if you get a random, non-critical god offered early in Tartarus (e.g., Demeter or Ares via a Trial of the Gods door you don't need), sometimes *skipping* them entirely (if it doesn't give you something vital) can subtly increase the pool concentration for your desired gods later. This is incredibly minor but technically a "gain."</li>
+                <li>Similarly, being aware that Duo Boon chances increase *after* you have two compatible boons from the prerequisite gods is key. The guide already covers this for Sea Storm, but extending that mental model to other *opportunistic* Duos (like Smoldering Air or Low Tolerance, if they happen to appear) is part of mastery.</li>
+            </ul>
+
+            <h3>2. Keepsake Cycling Nuance (Pre-emptive vs. Reactive)</h3>
+            <ul>
+                <li>The guide masterfully uses keepsake cycling. A further refinement is the *timing* and *reasoning* behind the Pom Blossom vs. Evergreen Acorn swap in Elysium/Styx.
+                    <ul>
+                        <li>**Proactive Pom Blossom:** If your core boons are already strongly established and you're confident in upcoming encounters, putting on Pom Blossom *immediately* after Asphodel can start leveling boons sooner, providing a compounding benefit over more rooms.</li>
+                        <li>**Reactive Evergreen Acorn:** If you took significant damage in Asphodel, or you know a particularly tough Elite room or mini-boss is coming up, switching to Acorn first provides immediate defensive benefit. It's about adapting to your current HP and the known layout of the biome.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>3. Specific Boons within Core Gods (Deep Dive into Utility)</h3>
+            <ul>
+                <li>Beyond the "must-haves" and "high priority," recognizing the utility of *other* boons from your core gods can refine your pick order if the ideal boons aren't offered.
+                    <ul>
+                        <li>**Zeus:** While Lightning Strike and Static Discharge are paramount, boons like **Thunder Flourish** (Special) or **Heaven's Vengeance** (Revenge) can still add significant Jolted procs and overall lightning damage if the main Attack boon is already strong. They contribute to Privileged Status uptime from additional sources.</li>
+                        <li>**Poseidon:** Besides Tidal Dash, **Typhoon Surge** (Dash damage from Wall Slam) or **Razor Shoals** (Rupture status) can sometimes provide an additional status curse for Privileged Status if Aphrodite is elusive, or simply add more. Again, these are situational.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>4. "Shop Before Boon" Mentality (Advanced Resource Management)</h3>
+            <ul>
+                <li>In rare scenarios, if you are very low on Obols but desperate for a specific Charon shop item (e.g., a Pom for Sea Storm, or a Death Defiance for an upcoming boss), it might be worth taking a path that *guarantees a shop* before a boon room, even if the boon room has a desired god. This sacrifices a *chance* at a boon for a *guaranteed* purchase. This requires intimate knowledge of biome layouts and shop spawn rates.</li>
+            </ul>
+        </section>
+
+        <section class="card mythbusting-faq">
+            <h2>MythBusting & Advanced FAQ</h2>
+
+            <h3>Common Myths Debunked:</h3>
+            <details>
+                <summary>Myth 1: "Eris Rail is only for long-range play."</summary>
+                <div class="details-content">
+                    <p><strong>Debunked:</strong> While the Rail is a ranged weapon, the Aspect of Eris's core buff encourages close-to-mid range engagement. Dashing into your Special's explosion to gain the +75% damage buff means you'll often be in the thick of combat, utilizing dash-strikes and the area-of-effect of your boons (like Sea Storm) effectively. It's a highly mobile, aggressive playstyle, not a static sniper build.</p>
+                </div>
+            </details>
+            <details>
+                <summary>Myth 2: "You need perfect RNG for a good build."</summary>
+                <div class="details-content">
+                    <p><strong>Debunked:</strong> The Eris Protocol is specifically designed to minimize RNG. By strategically using Keepsakes to force specific gods (Zeus, Poseidon, Aphrodite) in order, you dramatically increase the consistency of acquiring your core boons and Duo Boons. While some runs will be luckier than others, this guide provides a reliable framework to build a powerful setup almost every time.</p>
+                </div>
+            </details>
+            <details>
+                <summary>Myth 3: "Stubborn Defiance is better than Death Defiance."</summary>
+                <div class="details-content">
+                    <p><strong>Debunked:</strong> For the Eris Protocol, **Death Defiance** is superior. While Stubborn Defiance provides a single revive per chamber (good for early progression and learning), Death Defiance offers multiple full revives per run. For difficult boss fights and higher Heat levels, having 2-3 full revives provides significantly more survivability and a higher margin for error than a single, quickly-recharging revive that might not be enough in a prolonged boss encounter.</p>
+                </div>
+            </details>
+
+            <h3>Advanced FAQs:</h3>
+            <details>
+                <summary>FAQ 1: How do I get more Titan Blood/Diamonds/Ambrosia?</summary>
+                <div class="details-content">
+                    <p>These rare resources are primarily earned by defeating bosses on *new Heat levels* with *each weapon*. For example, defeating Megaera with the Sword on 0 Heat, then 1 Heat, then 2 Heat, etc., will grant Titan Blood each time. Refer to "Part 6: Comprehensive Resource Farming Guide" for detailed methods, including Prophecies, Broker trades, and fishing.</p>
+                </div>
+            </details>
+            <details>
+                <summary>FAQ 2: What if I don't get the exact boons or hammers recommended?</summary>
+                <div class="details-content">
+                    <p>The guide includes "Strategic Pivots" in Part 4 for exactly this reason. If Sea Storm doesn't appear, pivot to a pure Zeus build. If ideal hammers are missing, adjust your Special's role. The Fated Persuasion Mirror talent is your primary tool for re-rolling boon offerings to increase your chances. Adaptability is key!</p>
+                </div>
+            </details>
+            <details>
+                <summary>FAQ 3: When should I use my Companion (Battie/Shady)?</summary>
+                <div class="details-content">
+                    <p>Companion usage is tactical. **Battie** is best for burst damage against high-health targets (e.g., armored elites, mini-bosses, or boss phases). **Shady** excels at drawing aggro and creating breathing room in chaotic rooms or against dangerous ranged enemies/boss attacks (e.g., Theseus's Call). Practice timing their deployment for maximum impact.</p>
+                </div>
+            </details>
+            <details>
+                <summary>FAQ 4: Is this build good for speedrunning?</summary>
+                <div class="details-content">
+                    <p>The Eris Protocol is exceptionally fast and consistent, making it a popular choice for speedrunning. Its high global damage multiplier and ability to rapidly clear rooms contribute to quick clear times. While this guide focuses on consistency and high-heat clears rather than pure speedrunning tactics, the core principles lay a strong foundation for speed-oriented play.</p>
+                </div>
+            </details>
+            <details>
+                <summary>FAQ 5: Can I use other weapon aspects with this guide?</summary>
+                <div class="details-content">
+                    <p>This guide is specifically tailored to the **Aspect of Eris for the Adamant Rail** due to its unique damage buff and synergy with the recommended boons. While some general principles (like Mirror talents or resource farming) apply across all weapons, the core boon and hammer priorities are optimized for Eris Rail's playstyle. Other aspects will require different build strategies.</p>
+                </div>
+            </details>
+            <details>
+                <summary>FAQ 6: What about Chaos boons with negative effects?</summary>
+                <div class="details-content">
+                    <p>Chaos boons offer powerful, multiplicative buffs but come with temporary curses. For an aggressive build like Eris, the damage gains often outweigh the risks, especially for experienced players. Evaluate the specific curse (e.g., "take more damage from traps" is less risky than "lose a Death Defiance") against the potential reward. Look for Chaos gates early if you feel confident in your ability to manage the temporary debuff.</p>
+                </div>
+            </details>
+        </section>
+
+        <section class="card sources-section">
+            <h2>Sources</h2>
+            <ul>
+                <li>In-game mechanics and descriptions from Hades (Supergiant Games).</li>
+                <li>Community-derived build strategies and optimizations from various Hades player communities (e.g., Reddit, YouTube guides, speedrunning forums).</li>
+                <li>Personal extensive gameplay experience and testing.</li>
+            </ul>
+        </section>
+    </main>
+
+    <button id="navbar-toggle" class="floating-navbar-toggle" aria-expanded="false" aria-controls="floating-navbar-content">☰</button>
+
+    <nav id="floating-navbar" class="floating-navbar" aria-label="On-Page Tools">
+        <div class="navbar-content">
+            <h2>On-Page Tools</h2>
+
+            <div class="navbar-tool-section">
+                <h3>Build Checklist</h3>
+                <p>Check off boons/hammers as you acquire them in your simulated run.</p>
+                <div id="build-checklist-container">
+                    <!-- Checkboxes will be dynamically loaded here by JS -->
+                </div>
+                <button id="reset-checklist" aria-label="Reset Build Checklist">Reset Checklist</button>
+            </div>
+
+            <div class="navbar-tool-section">
+                <h3>Keepsake Planner</h3>
+                <label for="biome-select">Select Biome:</label>
+                <select id="biome-select">
+                    <option value="tartarus">Tartarus</option>
+                    <option value="asphodel">Asphodel</option>
+                    <option value="elysium">Elysium</option>
+                    <option value="styx">Temple of Styx</option>
+                </select>
+                <button id="get-keepsake-suggestion" aria-label="Get Keepsake Suggestion">Get Suggestion</button>
+                <div id="keepsake-output" class="tool-output" role="status" aria-live="polite"></div>
+            </div>
+
+            <div class="navbar-tool-section">
+                <h3>Heat Calculator</h3>
+                <label for="desired-heat">Desired Heat:</label>
+                <input type="number" id="desired-heat" min="0" max="63" value="0" aria-label="Enter desired Heat level">
+                <button id="calculate-heat" aria-label="Calculate Pact of Punishment suggestions">Calculate Suggestions</button>
+                <div id="heat-output" class="tool-output" role="status" aria-live="polite"></div>
+            </div>
+
+            <div class="navbar-tool-section">
+                <h3>Eris Aspect Level</h3>
+                <label for="eris-aspect-level">Current Eris Aspect Level (1-5):</label>
+                <input type="number" id="eris-aspect-level" min="1" max="5" value="1" aria-label="Enter current Eris Aspect level">
+                <button id="get-eris-buff-info" aria-label="Get Eris Buff Information">Get Info</button>
+                <div id="eris-buff-output" class="tool-output" role="status" aria-live="polite"></div>
+            </div>
+
+            <div class="navbar-tool-section">
+                <h3>Resource Farming Tips</h3>
+                <label for="resource-type">Select Resource:</label>
+                <select id="resource-type">
+                    <option value="titan-blood">Titan Blood</option>
+                    <option value="diamonds">Diamonds</option>
+                    <option value="ambrosia">Ambrosia</option>
+                    <option value="darkness">Darkness</option>
+                    <option value="gems">Gemstones</option>
+                </select>
+                <button id="get-resource-tip" aria-label="Get Resource Farming Tip">Get Tip</button>
+                <div id="resource-tip-output" class="tool-output" role="status" aria-live="polite"></div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', mainInit);
+
+        function mainInit() {
+            // --- Interactive Centerpiece (Build Tracker) ---
+            const buildSummary = document.getElementById('build-summary');
+            const biomeCheckboxes = document.querySelectorAll('.interactive-centerpiece .acquisition-item input[type="checkbox"]');
+
+            function updateBuildSummary() {
+                const acquiredBoons = [];
+                biomeCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        acquiredBoons.push(checkbox.dataset.boon);
+                    }
+                });
+
+                if (acquiredBoons.length > 0) {
+                    buildSummary.textContent = `Current Build: ${acquiredBoons.join(', ')}.`;
+                } else {
+                    buildSummary.textContent = 'Start your run to track your build progression!';
+                }
+            }
+
+            biomeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateBuildSummary);
+            });
+            updateBuildSummary(); // Initial update
+
+            // --- Floating Navbar Tools ---
+            const navbarToggle = document.getElementById('navbar-toggle');
+            const floatingNavbar = document.getElementById('floating-navbar');
+
+            navbarToggle.addEventListener('click', () => {
+                const isOpen = floatingNavbar.classList.toggle('open');
+                navbarToggle.setAttribute('aria-expanded', isOpen);
+                navbarToggle.textContent = isOpen ? '✕' : '☰'; // Change icon
+            });
+
+            // Tool 1: Build Checklist (dynamic loading & reset)
+            const buildChecklistContainer = document.getElementById('build-checklist-container');
+            const resetChecklistButton = document.getElementById('reset-checklist');
+
+            function populateBuildChecklist() {
+                buildChecklistContainer.innerHTML = ''; // Clear existing
+                const allAcquisitions = [
+                    { biome: 'Tartarus', label: 'Zeus Attack: **Lightning Strike**', id: 'tool-tartarus-zeus-attack' },
+                    { biome: 'Tartarus', label: 'Zeus Boon: **Static Discharge**', id: 'tool-tartarus-static-discharge' },
+                    { biome: 'Asphodel', label: 'Poseidon Dash: **Tidal Dash**', id: 'tool-asphodel-poseidon-dash' },
+                    { biome: 'Asphodel', label: 'Duo Boon: **Sea Storm**', id: 'tool-asphodel-sea-storm' },
+                    { biome: 'Elysium', label: 'Aphrodite Special: **Heartbreak Flourish**', id: 'tool-elysium-aphrodite-special' },
+                    { biome: 'Elysium', label: 'Hermes Combo: **Hyper Sprint + Rush Delivery**', id: 'tool-elysium-hermes-combo' },
+                    { biome: 'Elysium', label: 'Zeus Boons: **Double Strike/Splitting Bolt**', id: 'tool-elysium-zeus-lux' },
+                    { biome: 'General', label: 'Daedalus Hammer: **Cluster Bomb**', id: 'tool-cluster-bomb' },
+                    { biome: 'General', label: 'Daedalus Hammer: **Rocket Bomb**', id: 'tool-rocket-bomb' },
+                    { biome: 'General', label: 'Daedalus Hammer: **Triple Bomb**', id: 'tool-triple-bomb' },
+                    { biome: 'General', label: 'Eris Aspect Investment (Maxed)', id: 'tool-eris-aspect-max' },
+                    { biome: 'General', label: 'Artemis Boons (Pressure Points, Support Fire)', id: 'tool-artemis' },
+                    { biome: 'General', label: 'Chosen Call (Aphrodite/Zeus Aid)', id: 'tool-call' }
+                ];
+
+                allAcquisitions.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'acquisition-item';
+                    const input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.id = item.id;
+                    input.dataset.boon = item.label.replace(/\*\*/g, ''); // Clean for summary
+                    const label = document.createElement('label');
+                    label.htmlFor = item.id;
+                    label.innerHTML = `(${item.biome}) ${item.label}`; // Use innerHTML for bolding
+
+                    div.appendChild(input);
+                    div.appendChild(label);
+                    buildChecklistContainer.appendChild(div);
+                });
+
+                // Attach event listeners to newly created checkboxes in the tool
+                buildChecklistContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        // Sync checklist in tool with main interactive centerpiece
+                        const mainCheckboxId = checkbox.id.replace('tool-', '');
+                        const mainCheckbox = document.getElementById(mainCheckboxId);
+                        if (mainCheckbox) {
+                            mainCheckbox.checked = checkbox.checked;
+                        }
+                        updateBuildSummary();
+                    });
+                });
+            }
+
+            resetChecklistButton.addEventListener('click', () => {
+                buildChecklistContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                // Also reset checkboxes in the main interactive centerpiece
+                biomeCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updateBuildSummary();
+            });
+
+            populateBuildChecklist(); // Populate on load
+
+            // Tool 2: Keepsake Planner
+            const biomeSelect = document.getElementById('biome-select');
+            const getKeepsakeSuggestionButton = document.getElementById('get-keepsake-suggestion');
+            const keepsakeOutput = document.getElementById('keepsake-output');
+
+            const keepsakeSuggestions = {
+                tartarus: "Thunder Signet (Zeus) - To force Lightning Strike and Static Discharge.",
+                asphodel: "Conch Shell (Poseidon) - To force Tidal Dash and Sea Storm.",
+                elysium: "Pom Blossom (Persephone) - If strong, to level boons. Evergreen Acorn (Eurydice) - If defensive, for boss safety.",
+                styx: "Evergreen Acorn (Eurydice) - Highly recommended for the final boss fight. Pom Blossom (Persephone) - If you need more boon levels and feel very confident."
+            };
+
+            getKeepsakeSuggestionButton.addEventListener('click', () => {
+                const selectedBiome = biomeSelect.value;
+                keepsakeOutput.textContent = keepsakeSuggestions[selectedBiome] || "No specific suggestion for this biome.";
+            });
+
+            // Tool 3: Heat Calculator
+            const desiredHeatInput = document.getElementById('desired-heat');
+            const calculateHeatButton = document.getElementById('calculate-heat');
+            const heatOutput = document.getElementById('heat-output');
+
+            const pactSuggestions = {
+                0: "No Heat active. Focus on learning mechanics and unlocking permanent upgrades.",
+                1: "Start with Forced Overtime (Rank 1).",
+                2: "Forced Overtime (Rank 1), Damage Control (Rank 1).",
+                3: "Forced Overtime (Rank 1), Damage Control (Rank 1), Extreme Measures (Rank 1 - Furies).",
+                6: "Forced Overtime (Rank 2), Damage Control (Rank 1), Extreme Measures (Rank 1). Adds more speed.",
+                8: "Forced Overtime (Rank 2), Damage Control (Rank 2), Extreme Measures (Rank 1). Or add Extreme Measures (Rank 2 - Hydra).",
+                10: "Consider Tight Deadline (Rank 1 or 2) if you're fast. Extreme Measures (Rank 3 - Theseus/Asterius) is a good challenge.",
+                15: "Continue with Forced Overtime, Damage Control, Extreme Measures (up to 3). Add Underworld Customs if comfortable.",
+                20: "Bounties cap here. You'll need most of the 'free' Heat pacts. Focus on perfecting execution.",
+                32: "Requires near-mastery. You'll need almost all 'easy' Heat options and strong execution. Refer to advanced guides for specific 32-Heat builds."
+            };
+
+            calculateHeatButton.addEventListener('click', () => {
+                const desiredHeat = parseInt(desiredHeatInput.value, 10);
+                let suggestion = "No specific suggestion for this Heat level. Try a nearby value or refer to the guide's Pact section.";
+
+                if (desiredHeat >= 0 && desiredHeat <= 63) {
+                    const sortedHeats = Object.keys(pactSuggestions).map(Number).sort((a, b) => a - b);
+                    for (let i = 0; i < sortedHeats.length; i++) {
+                        if (desiredHeat <= sortedHeats[i]) {
+                            suggestion = pactSuggestions[sortedHeats[i]];
+                            break;
+                        }
+                        if (i === sortedHeats.length - 1) { // If it's higher than all defined, take the highest
+                            suggestion = pactSuggestions[sortedHeats[i]];
+                        }
+                    }
+                }
+                heatOutput.textContent = suggestion;
+            });
+
+            // Tool 4: Eris Aspect Level Calculator
+            const erisAspectLevelInput = document.getElementById('eris-aspect-level');
+            const getErisBuffInfoButton = document.getElementById('get-eris-buff-info');
+            const erisBuffOutput = document.getElementById('eris-buff-output');
+
+            const erisBuffDurations = {
+                1: "4 seconds",
+                2: "5 seconds",
+                3: "6 seconds",
+                4: "7 seconds",
+                5: "8 seconds"
+            };
+            const erisUpgradeCosts = {
+                1: "0 Titan Blood (initial unlock)",
+                2: "1 Titan Blood",
+                3: "2 Titan Blood",
+                4: "3 Titan Blood",
+                5: "4 Titan Blood (total 10 TB to max)"
+            };
+
+            getErisBuffInfoButton.addEventListener('click', () => {
+                const level = parseInt(erisAspectLevelInput.value, 10);
+                if (level >= 1 && level <= 5) {
+                    const duration = erisBuffDurations[level];
+                    const cost = erisUpgradeCosts[level];
+                    let nextCostInfo = "";
+                    if (level < 5) {
+                        nextCostInfo = ` Next upgrade to Level ${level + 1} costs: ${erisUpgradeCosts[level + 1]}.`;
+                    } else {
+                        nextCostInfo = " Aspect is maxed!";
+                    }
+                    erisBuffOutput.textContent = `At Level ${level}, the Eris buff lasts ${duration}. Cost to reach this level: ${cost}.${nextCostInfo}`;
+                } else {
+                    erisBuffOutput.textContent = "Please enter a valid Eris Aspect level (1-5).";
+                }
+            });
+
+            // Tool 5: Resource Farming Tips
+            const resourceTypeSelect = document.getElementById('resource-type');
+            const getResourceTipButton = document.getElementById('get-resource-tip');
+            const resourceTipOutput = document.getElementById('resource-tip-output');
+
+            const resourceTips = {
+                'titan-blood': "Primary: Defeat first & last boss on new Heat levels with each weapon. Also: Prophecies, Wretched Broker (1 Ambrosia), Styx Shop (1200 Obols), Fishing (final boss area).",
+                'diamonds': "Primary: Defeat Bone Hydra (second boss) on new Heat levels with each weapon. Also: Prophecies, Broker/Styx Shop (1000 Obols), Fishing (surface).",
+                'ambrosia': "Primary: Defeat Theseus & Asterius (third boss) on new Heat levels with each weapon. Also: First-time clears, Fated List Prophecies. Avoid trading for Titan Blood unless surplus.",
+                'darkness': "Primary: Rooms with Darkness rewards, Bosses (especially at low Heat). Also: Poseidon's Ocean's Bounty, Chaos boons for resource gains, Infernal Troves. Use Dark Thirst weapon.",
+                'gems': "Primary: Rooms with Gemstone rewards. Also: Poseidon's Ocean's Bounty, Chaos boons for resource gains, Infernal Troves. Use Dark Thirst weapon."
+            };
+
+            getResourceTipButton.addEventListener('click', () => {
+                const selectedResource = resourceTypeSelect.value;
+                resourceTipOutput.textContent = resourceTips[selectedResource];
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Apex Egg Salad: Instant Pot Edition</title>
+<!-- Corrected Google Fonts URL and font weight for Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--background-colour: #FDF8F0; /* Soft Cream */
+--surface-colour: #FFFFFF; /* Clean White */
+--primary-text-colour: #333333; /* Deep Charcoal */
+--secondary-text-colour: #666666; /* Medium Grey */
+--accent-primary: #A8C4A7; /* Soft Sage Green */
+--accent-secondary: #E0BBE4; /* Muted Lavender */
+--border-radius: 8px;
+--spacing-xs: 4px;
+--spacing-sm: 8px;
+--spacing-md: 16px;
+--spacing-lg: 24px;
+--spacing-xl: 32px;
+--header-height: 60px; /* Height for the fixed header */
+--footer-height: 60px; /* Height for the fixed footer */
+}
+/* General Body and Container Styling */
+body {
+font-family: 'Inter', sans-serif;
+margin: 0;
+padding: 0;
+background-color: var(--background-colour);
+color: var(--primary-text-colour);
+line-height: 1.6;
+overflow-x: hidden; /* Prevent horizontal scrolling */
+padding-bottom: var(--footer-height); /* Space for the fixed footer */
+scroll-behavior: smooth;
+}
+.container {
+max-width: 90%; /* Responsive width for mobile */
+margin: 0 auto;
+padding: var(--spacing-md) 0;
+box-sizing: border-box;
+}
+/* Adjust container max-width for larger screens */
+@media (min-width: 768px) {
+.container {
+max-width: 800px; /* Max width for desktop */
+}
+}
+/* Typography */
+h1, h2, h3, h4 {
+font-family: 'Playfair Display', serif;
+color: var(--primary-text-colour);
+margin-top: var(--spacing-lg);
+margin-bottom: var(--spacing-sm);
+line-height: 1.2;
+}
+h1 {
+font-size: clamp(2.5rem, 8vw, 3.5rem); /* Responsive font size */
+text-align: center;
+margin-bottom: var(--spacing-sm);
+}
+h2 {
+font-size: clamp(1.5rem, 5.5vw, 2.5rem); /* Adjusted for better mobile readability */
+color: var(--accent-primary);
+text-align: center;
+margin-top: var(--spacing-xl);
+margin-bottom: var(--spacing-md);
+}
+h3 {
+font-size: clamp(1.3rem, 4.5vw, 2rem); /* Adjusted for better mobile readability */
+color: var(--accent-primary);
+margin-top: var(--spacing-lg);
+margin-bottom: var(--spacing-sm);
+}
+h4 {
+font-size: clamp(1.2rem, 4vw, 1.6rem);
+color: var(--primary-text-colour);
+margin-top: var(--spacing-md);
+margin-bottom: var(--spacing-xs);
+}
+p {
+font-size: clamp(0.9rem, 3.5vw, 1.1rem); /* Adjusted base for compactness */
+margin-bottom: var(--spacing-sm);
+}
+ul {
+list-style: disc;
+padding-left: var(--spacing-lg);
+margin-bottom: var(--spacing-md);
+}
+li {
+margin-bottom: var(--spacing-xs);
+font-size: clamp(0.9rem, 3.5vw, 1rem);
+}
+/* Banner Section */
+.banner {
+background-color: var(--accent-primary);
+padding: var(--spacing-xl) var(--spacing-md);
+text-align: center;
+border-bottom-left-radius: var(--border-radius);
+border-bottom-right-radius: var(--border-radius);
+margin-bottom: var(--spacing-lg);
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.banner h1 {
+color: var(--primary-text-colour); /* Changed for WCAG AA contrast */
+margin-top: 0;
+font-size: clamp(2.2rem, 7vw, 3rem);
+}
+.banner p {
+color: var(--primary-text-colour); /* Changed for WCAG AA contrast */
+font-size: clamp(1rem, 3.8vw, 1.2rem);
+opacity: 0.9;
+margin-bottom: 0;
+}
+/* Card Styling */
+.card {
+background-color: var(--surface-colour);
+border-radius: var(--border-radius);
+padding: var(--spacing-sm) var(--spacing-md); /* Adjusted for compactness */
+margin-bottom: var(--spacing-lg);
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+border: 1px solid rgba(0, 0, 0, 0.05);
+}
+/* Interactive Centerpiece (Accordion/Step-by-Step Guide) */
+.interactive-centerpiece .card {
+padding: var(--spacing-sm); /* Already compact, keeping as is */
+}
+.step-item {
+border: 1px solid var(--background-colour);
+border-radius: var(--border-radius);
+margin-bottom: var(--spacing-sm);
+overflow: hidden;
+transition: all 0.3s ease-in-out;
+}
+.step-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: var(--spacing-md);
+background-color: var(--background-colour);
+cursor: pointer;
+font-weight: bold;
+color: var(--primary-text-colour);
+font-size: clamp(1rem, 3.8vw, 1.1rem);
+transition: background-color 0.2s ease;
+}
+.step-header:hover {
+background-color: #EFE8DF; /* Slightly darker cream on hover */
+}
+.step-header input[type="checkbox"] {
+margin-right: var(--spacing-sm);
+transform: scale(1.2);
+accent-color: var(--accent-primary);
+}
+.step-content {
+padding: var(--spacing-md);
+background-color: var(--surface-colour);
+max-height: 0;
+overflow: hidden;
+transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+font-size: clamp(0.9rem, 3.5vw, 1rem);
+color: var(--secondary-text-colour);
+}
+.step-item.active .step-content {
+max-height: 500px; /* Arbitrary large value to allow content to expand */
+padding: var(--spacing-md);
+}
+.step-item.active .step-header {
+background-color: var(--accent-primary);
+color: var(--primary-text-colour); /* Changed for WCAG AA contrast */
+}
+.step-item.active .step-header:hover {
+background-color: #8CA88B; /* Darker sage on hover when active */
+}
+.step-content p {
+margin-bottom: var(--spacing-sm);
+}
+.step-content strong {
+color: var(--primary-text-colour);
+}
+/* Checkbox styling for better visibility */
+input[type="checkbox"] {
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+width: 20px;
+height: 20px;
+border: 2px solid var(--accent-primary);
+border-radius: 4px;
+background-color: var(--surface-colour);
+cursor: pointer;
+position: relative;
+outline: none;
+transition: background-color 0.2s, border-color 0.2s;
+}
+input[type="checkbox"]:checked {
+background-color: var(--accent-primary);
+border-color: var(--accent-primary);
+}
+input[type="checkbox"]:checked::after {
+content: '✔';
+color: var(--surface-colour);
+font-size: 14px;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+input[type="checkbox"]:focus-visible {
+outline: 2px solid var(--accent-secondary);
+outline-offset: 2px;
+}
+/* Deep Dive Modules */
+.deep-dive-modules .card {
+padding: var(--spacing-sm) var(--spacing-md); /* Adjusted for compactness */
+}
+.deep-dive-modules h4 {
+color: var(--accent-primary);
+margin-top: 0;
+}
+/* MythBusting & FAQ */
+.myth-faq .card {
+padding: var(--spacing-sm) var(--spacing-md); /* Adjusted for compactness */
+}
+.myth-faq .details-summary {
+border-bottom: 1px solid var(--background-colour);
+padding: var(--spacing-sm) 0;
+}
+.myth-faq .details-summary:last-child {
+border-bottom: none;
+}
+.myth-faq details > summary {
+font-weight: bold;
+cursor: pointer;
+padding: var(--spacing-xs) 0;
+font-size: clamp(0.95rem, 3.6vw, 1.05rem);
+color: var(--primary-text-colour);
+outline: none;
+}
+.myth-faq details > summary:focus-visible {
+outline: 2px solid var(--accent-secondary);
+outline-offset: 2px;
+}
+.myth-faq details[open] > summary {
+color: var(--accent-primary);
+}
+.myth-faq details p {
+padding-top: var(--spacing-xs);
+padding-left: var(--spacing-sm);
+font-size: clamp(0.9rem, 3.4vw, 1rem);
+color: var(--secondary-text-colour);
+}
+/* Action Plan */
+.action-plan .card {
+padding: var(--spacing-sm) var(--spacing-md); /* Adjusted for compactness */
+}
+.action-plan ul {
+list-style: none;
+padding-left: 0;
+}
+.action-plan li {
+position: relative;
+padding-left: var(--spacing-lg);
+margin-bottom: var(--spacing-sm);
+font-size: clamp(0.9rem, 3.5vw, 1rem);
+}
+.action-plan li::before {
+content: '•';
+color: var(--accent-primary);
+position: absolute;
+left: 0;
+font-size: 1.2em;
+line-height: 1;
+}
+/* Curated Resources */
+.curated-resources .card {
+padding: var(--spacing-sm) var(--spacing-md); /* Adjusted for compactness */
+}
+.curated-resources ul {
+list-style: disc;
+padding-left: var(--spacing-lg);
+}
+.curated-resources a {
+color: var(--accent-primary);
+text-decoration: none;
+font-weight: bold;
+transition: color 0.2s ease;
+}
+.curated-resources a:hover {
+color: var(--accent-secondary);
+}
+.curated-resources a:focus-visible {
+outline: 2px solid var(--accent-secondary);
+outline-offset: 2px;
+}
+/* Sources Section */
+.sources-section {
+padding: var(--spacing-md) 0;
+margin-top: var(--spacing-lg);
+font-size: 0.85rem;
+color: var(--secondary-text-colour);
+border-top: 1px solid var(--background-colour);
+padding-top: var(--spacing-md);
+}
+.sources-section h3 {
+text-align: left;
+margin-top: 0;
+font-size: 1.2rem;
+color: var(--primary-text-colour);
+}
+.sources-section ul {
+list-style: disc;
+padding-left: var(--spacing-lg);
+}
+.sources-section li {
+margin-bottom: var(--spacing-xs);
+}
+/* Fixed Bottom Navbar for Tools */
+.bottom-navbar {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background-color: var(--primary-text-colour);
+color: var(--surface-colour);
+display: flex;
+justify-content: space-around;
+align-items: center;
+padding: var(--spacing-sm) 0;
+box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+z-index: 1000;
+height: var(--footer-height);
+box-sizing: border-box;
+}
+.bottom-navbar button {
+background: none;
+border: none;
+color: var(--surface-colour);
+font-size: 0.9rem;
+cursor: pointer;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: var(--spacing-xs);
+border-radius: var(--border-radius);
+transition: background-color 0.2s ease;
+}
+.bottom-navbar button:hover {
+background-color: rgba(255, 255, 255, 0.1);
+}
+.bottom-navbar button:focus-visible {
+outline: 2px solid var(--accent-secondary);
+outline-offset: 2px;
+}
+.bottom-navbar button .icon {
+font-size: 1.5rem;
+margin-bottom: var(--spacing-xs);
+}
+/* Tool Modal */
+.tool-modal {
+position: fixed;
+bottom: var(--footer-height); /* Position above the navbar */
+left: 0;
+width: 100%;
+max-height: 80vh;
+background-color: var(--surface-colour);
+box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+border-top-left-radius: var(--border-radius);
+border-top-right-radius: var(--border-radius);
+transform: translateY(100%);
+transition: transform 0.3s ease-out;
+z-index: 999;
+display: flex;
+flex-direction: column;
+}
+.tool-modal.open {
+transform: translateY(0);
+}
+.tool-modal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: var(--spacing-md);
+background-color: var(--accent-secondary);
+color: var(--primary-text-colour); /* Changed for WCAG AA contrast */
+border-top-left-radius: var(--border-radius);
+border-top-right-radius: var(--border-radius);
+font-weight: bold;
+}
+.tool-modal-header button {
+background: none;
+border: none;
+color: var(--primary-text-colour); /* Changed for WCAG AA contrast */
+font-size: 1.5rem;
+cursor: pointer;
+transition: transform 0.2s ease;
+}
+.tool-modal-header button:hover {
+transform: rotate(90deg);
+}
+.tool-modal-header button:focus-visible {
+outline: 2px solid var(--primary-text-colour); /* Changed for WCAG AA contrast */
+outline-offset: 2px;
+}
+.tool-modal-content {
+padding: var(--spacing-md);
+overflow-y: auto;
+flex-grow: 1;
+}
+/* Timer Tool */
+.timer-tool {
+text-align: center;
+}
+.timer-display {
+font-family: 'Playfair Display', serif;
+font-size: clamp(2.5rem, 10vw, 4rem);
+color: var(--accent-primary);
+margin: var(--spacing-md) 0;
+}
+.timer-controls button {
+background-color: var(--accent-primary);
+color: var(--surface-colour);
+border: none;
+padding: var(--spacing-sm) var(--spacing-md);
+margin: var(--spacing-xs);
+border-radius: var(--border-radius);
+cursor: pointer;
+font-size: 1rem;
+transition: background-color 0.2s ease;
+}
+.timer-controls button:hover {
+background-color: #8CA88B;
+}
+.timer-controls button:focus-visible {
+outline: 2px solid var(--accent-secondary);
+outline-offset: 2px;
+}
+/* Checklist Tool */
+.checklist-tool ul {
+list-style: none;
+padding: 0;
+}
+.checklist-tool li {
+display: flex;
+align-items: center;
+margin-bottom: var(--spacing-sm);
+font-size: clamp(0.95rem, 3.6vw, 1.05rem);
+}
+.checklist-tool input[type="checkbox"] {
+margin-right: var(--spacing-sm);
+flex-shrink: 0;
+}
+/* Note-taking Tool */
+.note-taking-tool textarea {
+width: 100%;
+min-height: 150px;
+padding: var(--spacing-sm);
+border: 1px solid var(--background-colour);
+border-radius: var(--border-radius);
+font-family: 'Inter', sans-serif;
+font-size: 1rem;
+box-sizing: border-box;
+resize: vertical;
+color: var(--primary-text-colour);
+background-color: var(--background-colour);
+}
+.note-taking-tool textarea:focus {
+outline: 2px solid var(--accent-primary);
+border-color: var(--accent-primary);
+}
+/* Utility classes for screen reader only content */
+.sr-only {
+position: absolute;
+width: 1px;
+height: 1px;
+padding: 0;
+margin: -1px;
+overflow: hidden;
+clip: rect(0, 0, 0, 0);
+white-space: nowrap;
+border-width: 0;
+}
+</style>
+</head>
+<body>
+<header class="banner">
+<h1>The Apex Egg Salad: Instant Pot Edition</h1>
+<p>Effortless Perfection, Every Time.</p>
+</header>
+<main class="container">
+<section class="introduction card">
+<h2>Introduction: The Pursuit of the Perfect Egg Salad</h2>
+<p>Egg salad, a nostalgic comfort food, often falls victim to mediocrity. This guide deconstructs the classic, offering a definitive methodology to achieve a flawlessly creamy yet texturally dynamic, deeply savory yet bright and fresh result. By integrating the efficiency of the Instant Pot, we aim to simplify the process while elevating the outcome. This journey is about mastering deliberate technical choices, from perfectly cooked eggs to balanced flavor profiles, ensuring a superior egg salad that is engineered for delight.</p>
+</section>
+<section class="interactive-centerpiece">
+<h2>The Method, Deconstructed: A Step-by-Step Guide</h2>
+<div class="card">
+<div class="step-item" id="step-1">
+<div class="step-header" tabindex="0" role="button" aria-expanded="false" aria-controls="content-step-1">
+<input type="checkbox" id="checkbox-step-1" aria-label="Mark step 1 as complete">
+<span>1. Cook the Eggs (Instant Pot Method)</span>
+</div>
+<div class="step-content" id="content-step-1" aria-hidden="true">
+<p>Place the trivet in your Instant Pot and add 1 cup of water. Carefully place 6 large eggs on the trivet. Secure the lid and set the vent to sealing. Select "Manual" or "Pressure Cook" and set the time to <strong>5 minutes on High Pressure</strong>. Once cooking is complete, allow a <strong>Natural Pressure Release (NPR) for 5 minutes</strong>. Then, Quick Release (QR) any remaining pressure.</p>
+<p><strong>Rationale:</strong> The Instant Pot provides consistent, gentle heat, yielding perfectly cooked eggs with tender whites and yolks, and significantly eases peeling, making it a highly efficient method.</p>
+</div>
+</div>
+<div class="step-item" id="step-2">
+<div class="step-header" tabindex="0" role="button" aria-expanded="false" aria-controls="content-step-2">
+<input type="checkbox" id="checkbox-step-2" aria-label="Mark step 2 as complete">
+<span>2. Chill and Peel</span>
+</div>
+<div class="step-content" id="content-step-2" aria-hidden="true">
+<p>Immediately transfer the cooked eggs to a large bowl of ice water and let them cool for at least <strong>5 minutes</strong>. This rapid cooling helps prevent the unappealing greenish-grey ring around the yolk and makes the eggs incredibly easy to peel.</p>
+<p><strong>Rationale:</strong> The ice bath halts the cooking process to prevent overcooked, green yolks and firms the egg, causing it to pull away from the shell for easier peeling.</p>
+</div>
+</div>
+<div class="step-item" id="step-3">
+<div class="step-header" tabindex="0" role="button" aria-expanded="false" aria-controls="content-step-3">
+<input type="checkbox" id="checkbox-step-3" aria-label="Mark step 3 as complete">
+<span>3. Prepare the Mise en Place</span>
+</div>
+<div class="step-content" id="content-step-3" aria-hidden="true">
+<p>While the eggs cool, prepare the other components. Finely mince 1 large rib of celery (with leaves) and place it in a paper towel. Squeeze gently to remove excess moisture. Finely chop 1.5 tablespoons of fresh dill and thinly slice 2 scallions (white and green parts).</p>
+<p><strong>Rationale:</strong> Prepping all ingredients ensures they are ready for gentle mixing. Removing excess water from the celery is a critical step to prevent a watery salad.</p>
+</div>
+</div>
+<div class="step-item" id="step-4">
+<div class="step-header" tabindex="0" role="button" aria-expanded="false" aria-controls="content-step-4">
+<input type="checkbox" id="checkbox-step-4" aria-label="Mark step 4 as complete">
+<span>4. Create the "Yolk-naise"</span>
+</div>
+<div class="step-content" id="content-step-4" aria-hidden="true">
+<p>Peel the cooled eggs. Slice them in half and gently remove the yolks, placing them in a medium mixing bowl. Set the whites aside. Using a fork, mash the yolks until they are a fine crumble. Add 1/3 cup full-fat mayonnaise, 1 tablespoon crème fraîche or full-fat Greek yogurt, 2 teaspoons Dijon mustard, 1.5 teaspoons fresh lemon juice, 2-3 dashes Worcestershire sauce, 1/8 teaspoon smoked paprika, a pinch of cayenne pepper, and 1/2 teaspoon kosher salt (plus more to taste) and several grinds of freshly ground black pepper. Mix until the dressing is completely smooth and creamy.</p>
+<p><strong>Rationale:</strong> This "deviled egg" technique is the secret to an ultra-creamy, lump-free dressing. It ensures the dry yolks are perfectly emulsified into the binder before the textured components are added.</p>
+</div>
+</div>
+<div class="step-item" id="step-5">
+<div class="step-header" tabindex="0" role="button" aria-expanded="false" aria-controls="content-step-5">
+<input type="checkbox" id="checkbox-step-5" aria-label="Mark step 5 as complete">
+<span>5. Chop and Fold</span>
+</div>
+<div class="step-content" id="content-step-5" aria-hidden="true">
+<p>Coarsely chop the reserved egg whites into your desired size (1/4 to 1/2-inch pieces are ideal). Add the chopped whites, dried celery, sliced scallions, and fresh dill to the bowl with the yolk dressing. Use a flexible spatula to gently fold everything together until just combined.</p>
+<p><strong>Rationale:</strong> Folding, rather than vigorous stirring, preserves the distinct, tender chunks of egg white and prevents the salad from becoming a uniform paste.</p>
+</div>
+</div>
+<div class="step-item" id="step-6">
+<div class="step-header" tabindex="0" role="button" aria-expanded="false" aria-controls="content-step-6">
+<input type="checkbox" id="checkbox-step-6" aria-label="Mark step 6 as complete">
+<span>6. Chill and Final Seasoning</span>
+</div>
+<div class="step-content" id="content-step-6" aria-hidden="true">
+<p>Cover the bowl and refrigerate for at least 30 minutes, and up to an hour. Before serving, taste the chilled salad and adjust seasoning as needed with more salt, pepper, or a tiny splash of lemon juice.</p>
+<p><strong>Rationale:</strong> Chilling allows the flavors to meld and deepen. Cold food numbs the palate slightly, so it often requires a final adjustment of seasoning to taste perfect when served.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="deep-dive-modules">
+<h2>Deep Dive Modules</h2>
+<div class="card">
+<h4>The Instant Pot Advantage</h4>
+<p>While traditional steaming methods yield good results, the Instant Pot offers unparalleled consistency and ease for cooking eggs. The controlled pressure environment ensures uniform cooking, leading to perfectly set whites and creamy yolks every time. Crucially, the rapid pressure change often makes the eggs incredibly easy to peel, saving significant time and frustration compared to stovetop methods. The "5-5-5" rule (5 minutes high pressure, 5 minutes natural release, 5 minutes ice bath) is a widely acclaimed technique for achieving ideal hard-cooked eggs for egg salad.</p>
+</div>
+<div class="card">
+<h4>Binder Brilliance: Why Full-Fat Reigns</h4>
+<p>The binder is the soul of your egg salad. Full-fat mayonnaise is non-negotiable because it forms a stable emulsion, creating the desired thick, creamy mouthfeel. Low-fat alternatives, laden with water and starches, lead to watery, unstable salads prone to breaking down. Augmenting with a touch of crème fraîche or full-fat Greek yogurt adds a sophisticated, cultured tang that elevates the flavor profile, cutting through richness with nuance.</p>
+</div>
+<div class="card">
+<h4>Flavor Foundations: Acidity, Alliums, and Crunch</h4>
+<p>Beyond richness, balance is key. Dijon mustard provides a sharp, complex acidity, while an additional splash of fresh lemon juice "lifts" the entire dish, preventing cloying heaviness. Scallions offer a mild, fresh onion bite without the harshness of raw bulb onions, and finely minced celery provides essential textural contrast. Remember to squeeze excess moisture from celery to maintain the salad's creamy integrity.</p>
+</div>
+</section>
+<section class="myth-faq">
+<h2>MythBusting & Advanced FAQ</h2>
+<div class="card">
+<h3>MythBusting</h3>
+<div class="details-summary">
+<details>
+<summary>Myth: Egg Salad is Always Watery</summary>
+<p><strong>Debunked:</strong> Watery egg salad is a symptom of using low-fat binders or not properly preparing ingredients like celery. By using full-fat mayonnaise and squeezing excess moisture from vegetables, you ensure a stable, creamy emulsion that holds its texture.</p>
+</details>
+</div>
+<div class="details-summary">
+<details>
+<summary>Myth: Boiling is Best for Eggs</summary>
+<p><strong>Debunked:</strong> While common, direct boiling can lead to rubbery whites and green-tinged, chalky yolks. Steaming (or using an Instant Pot) provides more consistent, gentle heat, resulting in tender eggs that are significantly easier to peel due to the rapid setting of the albumen.</p>
+</details>
+</div>
+<div class="details-summary">
+<details>
+<summary>Myth: Low-Fat Mayo is Healthier and Fine</summary>
+<p><strong>Debunked:</strong> From a culinary science perspective, low-fat mayonnaise replaces essential fats with water, starches, and gums, creating a weak emulsion. This leads to a runny, unstable salad with an inferior texture and often an unpleasant aftertaste, compromising the overall quality of the dish.</p>
+</details>
+</div>
+<h3>Advanced FAQ</h3>
+<div class="details-summary">
+<details>
+<summary>Can I make this egg salad ahead of time?</summary>
+<p>Yes, egg salad benefits from chilling for at least 30 minutes for flavors to meld. It can be made up to 2-3 days in advance and stored in an airtight container in the refrigerator. Note that the crunch from the celery may soften slightly over time.</p>
+</details>
+</div>
+<div class="details-summary">
+<details>
+<summary>How should I store leftovers, and for how long?</summary>
+<p>Store leftover egg salad in an airtight container in the refrigerator for up to 3-4 days. It is not recommended to freeze egg salad, as the texture of the eggs and mayonnaise will change upon thawing, becoming watery and unappetizing.</p>
+</details>
+</div>
+<div class="details-summary">
+<details>
+<summary>What are good substitutions if I don't like dill?</summary>
+<p>If dill isn't to your taste, fresh parsley is an excellent neutral alternative that still provides freshness. Chives offer a delicate oniony-herbaceous note. You could also try a mix of parsley and chives for a balanced flavor.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="action-plan">
+<h2>Graduated Action Plan</h2>
+<div class="card">
+<h4>Getting Started</h4>
+<ul>
+<li>Master the Instant Pot egg cooking technique for consistently perfect eggs.</li>
+<li>Follow the Apex Recipe exactly to understand the foundational flavor balance.</li>
+<li>Focus on the "yolk-naise" method for ultimate creaminess.</li>
+</ul>
+<h4>Deepening Your Understanding</h4>
+<ul>
+<li>Experiment with the "Framework for Customization" suggestions (e.g., adding capers or smoked paprika).</li>
+<li>Pay attention to the textural contributions of each ingredient.</li>
+<li>Refine your seasoning by tasting and adjusting before serving.</li>
+</ul>
+<h4>Mastering the Craft</h4>
+<ul>
+<li>Explore different bread types and moisture barrier techniques for sandwiches.</li>
+<li>Consider making your own mayonnaise for an even more elevated flavor.</li>
+<li>Develop your own unique variations while maintaining the core principles of balance and texture.</li>
+</ul>
+</div>
+</section>
+<section class="curated-resources">
+<h2>Curated Resources</h2>
+<div class="card">
+<ul>
+<li><a href="https://www.google.com/search?q=best+egg+salad+recipes" target="_blank" rel="noopener noreferrer">Explore more top-rated egg salad recipes</a></li>
+<li><a href="https://www.google.com/search?q=Instant+Pot+egg+cooking+tips" target="_blank" rel="noopener noreferrer">Discover advanced Instant Pot egg cooking tips</a></li>
+<li><a href="https://www.google.com/search?q=creative+egg+salad+variations" target="_blank" rel="noopener noreferrer">Find creative egg salad variations and serving ideas</a></li>
+</ul>
+</div>
+</section>
+</main>
+<footer class="container sources-section">
+<h3>Sources</h3>
+<ul>
+<li><a href="https://www.google.com/search?q=Serious+Eats+egg+salad" target="_blank" rel="noopener noreferrer">Serious Eats: The Best Egg Salad Sandwich</a></li>
+<li><a href="https://www.google.com/search?q=Food+Network+egg+salad" target="_blank" rel="noopener noreferrer">Food Network: The Best Egg Salad</a></li>
+<li><a href="https://www.google.com/search?q=Bon+Appetit+egg+salad" target="_blank" rel="noopener noreferrer">Bon Appétit: Adam Makes the Perfect Egg Salad</a></li>
+<li><a href="https://www.google.com/search?q=Instant+Pot+egg+5-5-5+rule" target="_blank" rel="noopener noreferrer">Instant Pot Official Resources & Community Forums (for 5-5-5 rule consensus)</a></li>
+</ul>
+</footer>
+<nav class="bottom-navbar" role="navigation" aria-label="Tools">
+<button id="timer-btn" aria-controls="tool-modal" aria-expanded="false">
+<span class="icon">⏱️</span>
+<span>Timer</span>
+</button>
+<button id="checklist-btn" aria-controls="tool-modal" aria-expanded="false">
+<span class="icon">📋</span>
+<span>Ingredients</span>
+</button>
+<button id="notes-btn" aria-controls="tool-modal" aria-expanded="false">
+<span class="icon">📝</span>
+<span>Notes</span>
+</button>
+</nav>
+<div id="tool-modal" class="tool-modal" role="dialog" aria-modal="true" aria-labelledby="tool-modal-title" aria-hidden="true">
+<div class="tool-modal-header">
+<h3 id="tool-modal-title">Tool</h3>
+<button id="close-tool-modal-btn" aria-label="Close tool">✕</button>
+</div>
+<div class="tool-modal-content">
+<!-- Tool content will be injected here -->
+</div>
+</div>
+<script>
+// Main initialization function
+function mainInit() {
+// Get CSS variables for consistent styling in JS
+const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const accentPrimary = getCssVar('--accent-primary');
+
+// --- Interactive Step-by-Step Guide Logic ---
+const stepItems = document.querySelectorAll('.step-item');
+stepItems.forEach(item => {
+const header = item.querySelector('.step-header');
+const content = item.querySelector('.step-content');
+const checkbox = item.querySelector('input[type="checkbox"]');
+
+const toggleStep = () => {
+const isActive = item.classList.toggle('active');
+content.setAttribute('aria-hidden', !isActive);
+header.setAttribute('aria-expanded', isActive);
+
+// Close other open steps
+stepItems.forEach(otherItem => {
+if (otherItem !== item && otherItem.classList.contains('active')) {
+otherItem.classList.remove('active');
+otherItem.querySelector('.step-content').setAttribute('aria-hidden', true);
+otherItem.querySelector('.step-header').setAttribute('aria-expanded', false);
+}
+});
+};
+
+header.addEventListener('click', (event) => {
+// Only toggle if click is not on the checkbox itself
+if (event.target !== checkbox) {
+toggleStep();
+}
+});
+
+// Allow keyboard navigation for headers
+header.addEventListener('keydown', (event) => {
+if (event.key === 'Enter' || event.key === ' ') {
+event.preventDefault(); // Prevent scrolling for spacebar
+toggleStep();
+}
+});
+
+// Prevent header click from toggling if checkbox is clicked
+checkbox.addEventListener('click', (event) => {
+event.stopPropagation(); // Stop event bubbling to header
+// No need to toggle step here, checkbox state handles itself
+});
+});
+
+// --- Tool Modal Logic ---
+const toolModal = document.getElementById('tool-modal');
+const toolModalTitle = document.getElementById('tool-modal-title');
+const toolModalContent = toolModal.querySelector('.tool-modal-content');
+const closeToolModalBtn = document.getElementById('close-tool-modal-btn');
+const timerBtn = document.getElementById('timer-btn');
+const checklistBtn = document.getElementById('checklist-btn');
+const notesBtn = document.getElementById('notes-btn');
+
+let lastFocusedElement = null; // To store the element that opened the modal
+
+// String of focusable elements for modal focus trapping
+const focusableElementsString = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
+
+// Function to trap focus within the modal
+const trapFocus = (event) => {
+const focusableModalElements = toolModal.querySelectorAll(focusableElementsString);
+const firstFocusableElement = focusableModalElements[0];
+const lastFocusableElement = focusableModalElements[focusableModalElements.length - 1];
+
+if (event.key === 'Tab') {
+if (event.shiftKey) { // if shift key pressed for shift + tab combination
+if (document.activeElement === firstFocusableElement) {
+lastFocusableElement.focus();
+event.preventDefault();
+}
+} else { // if tab key is pressed
+if (document.activeElement === lastFocusableElement) {
+firstFocusableElement.focus();
+event.preventDefault();
+}
+}
+}
+};
+
+const openToolModal = (toolName, contentHTML, openerElement) => {
+lastFocusedElement = openerElement; // Store the element that opened the modal
+toolModalTitle.textContent = toolName;
+toolModalContent.innerHTML = contentHTML;
+toolModal.classList.add('open');
+toolModal.setAttribute('aria-hidden', 'false');
+toolModal.setAttribute('aria-modal', 'true'); // Indicate modal behavior
+document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+// Set focus to the close button for accessibility
+closeToolModalBtn.focus();
+
+// Add event listener for focus trapping
+toolModal.addEventListener('keydown', trapFocus);
+
+// Initialize specific tool logic if needed
+if (toolName === 'Timer') {
+initTimerTool();
+} else if (toolName === 'Ingredients Checklist') {
+initChecklistTool();
+} else if (toolName === 'Notes') {
+initNotesTool();
+}
+};
+
+const closeToolModal = () => {
+toolModal.classList.remove('open');
+toolModal.setAttribute('aria-hidden', 'true');
+toolModal.removeAttribute('aria-modal');
+document.body.style.overflow = ''; // Restore scrolling
+toolModalContent.innerHTML = ''; // Clear content
+
+// Remove event listener for focus trapping
+toolModal.removeEventListener('keydown', trapFocus);
+
+// Return focus to the element that opened the modal
+if (lastFocusedElement) {
+lastFocusedElement.focus();
+lastFocusedElement = null; // Clear stored element
+}
+};
+
+closeToolModalBtn.addEventListener('click', closeToolModal);
+
+// Close modal if escape key is pressed
+document.addEventListener('keydown', (event) => {
+if (event.key === 'Escape' && toolModal.classList.contains('open')) {
+closeToolModal();
+}
+});
+
+// --- Timer Tool ---
+let timerInterval;
+let timeLeft = 0; // in seconds
+let isRunning = false;
+
+// Corrected: timerToolHTML now correctly defined as a template literal
+const timerToolHTML = `<div class="timer-tool">
+<p>Set a timer for cooking or chilling steps.</p>
+<div class="timer-display" role="timer" aria-live="polite">00:00</div>
+<div class="timer-controls">
+<input type="number" id="timer-minutes" value="5" min="0" max="60" aria-label="Minutes"> min
+<input type="number" id="timer-seconds" value="0" min="0" max="59" aria-label="Seconds"> sec
+<button id="start-timer-btn" aria-label="Start timer">Start</button>
+<button id="pause-timer-btn" aria-label="Pause timer" disabled>Pause</button>
+<button id="reset-timer-btn" aria-label="Reset timer" disabled>Reset</button>
+</div>
+<p id="timer-message" aria-live="polite" style="margin-top: var(--spacing-sm); color: ${accentPrimary};"></p>
+</div>`;
+
+const updateTimerDisplay = () => {
+const minutes = Math.floor(timeLeft / 60);
+const seconds = timeLeft % 60;
+// Corrected: display string now a proper template literal
+const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+document.querySelector('.timer-display').textContent = display;
+};
+
+const startTimer = () => {
+const minutesInput = document.getElementById('timer-minutes');
+const secondsInput = document.getElementById('timer-seconds');
+const message = document.getElementById('timer-message');
+
+if (!isRunning) {
+// If starting fresh or resuming from 0
+if (timeLeft <= 0) {
+const minutes = parseInt(minutesInput.value) || 0;
+const seconds = parseInt(secondsInput.value) || 0;
+timeLeft = minutes * 60 + seconds;
+}
+
+if (timeLeft <= 0) {
+message.textContent = "Please set a time greater than zero.";
+return;
+}
+
+isRunning = true;
+document.getElementById('start-timer-btn').disabled = true;
+document.getElementById('pause-timer-btn').disabled = false;
+document.getElementById('reset-timer-btn').disabled = false;
+minutesInput.disabled = true;
+secondsInput.disabled = true;
+message.textContent = "Timer running...";
+
+timerInterval = setInterval(() => {
+if (timeLeft > 0) {
+timeLeft--;
+updateTimerDisplay();
+} else {
+clearInterval(timerInterval);
+isRunning = false;
+document.getElementById('start-timer-btn').disabled = false;
+document.getElementById('pause-timer-btn').disabled = true;
+message.textContent = "Time's up!";
+// Optional: Play a sound or show a visual alert
+}
+}, 1000);
+}
+};
+
+const pauseTimer = () => {
+clearInterval(timerInterval);
+isRunning = false;
+document.getElementById('start-timer-btn').disabled = false;
+document.getElementById('pause-timer-btn').disabled = true;
+document.getElementById('timer-message').textContent = "Timer paused.";
+};
+
+const resetTimer = () => {
+clearInterval(timerInterval);
+isRunning = false;
+timeLeft = 0;
+updateTimerDisplay();
+document.getElementById('start-timer-btn').disabled = false;
+document.getElementById('pause-timer-btn').disabled = true;
+document.getElementById('reset-timer-btn').disabled = true;
+document.getElementById('timer-minutes').disabled = false;
+document.getElementById('timer-seconds').disabled = false;
+document.getElementById('timer-minutes').value = 5; // Reset to default
+document.getElementById('timer-seconds').value = 0; // Reset to default
+document.getElementById('timer-message').textContent = "";
+};
+
+const initTimerTool = () => {
+updateTimerDisplay(); // Initialize display to 00:00
+document.getElementById('start-timer-btn').addEventListener('click', startTimer);
+document.getElementById('pause-timer-btn').addEventListener('click', pauseTimer);
+document.getElementById('reset-timer-btn').addEventListener('click', resetTimer);
+// Ensure inputs are enabled on init
+document.getElementById('timer-minutes').disabled = false;
+document.getElementById('timer-seconds').disabled = false;
+// Reset timer state when tool is opened
+resetTimer();
+};
+
+timerBtn.addEventListener('click', (event) => openToolModal('Timer', timerToolHTML, event.currentTarget));
+
+// --- Ingredients Checklist Tool ---
+const ingredients = [
+"6 large eggs",
+"1/3 cup full-fat, high-quality mayonnaise",
+"1 tablespoon crème fraîche or full-fat Greek yogurt",
+"2 teaspoons Dijon mustard",
+"1.5 teaspoons fresh lemon juice",
+"2-3 dashes Worcestershire sauce",
+"1/8 teaspoon smoked paprika",
+"A pinch of cayenne pepper",
+"1/2 teaspoon kosher salt",
+"Freshly ground black pepper",
+"1 large rib of celery, with leaves, very finely minced (about 1/3 cup)",
+"2 scallions, white and green parts, thinly sliced",
+"1.5 tablespoons finely chopped fresh dill"
+];
+
+// Corrected: checklistToolHTML now correctly defined as a template literal
+const checklistToolHTML = `<div class="checklist-tool">
+<h4>Ingredients for The Apex Egg Salad:</h4>
+<ul id="ingredients-list">
+${ingredients.map((item, index) =>
+`<li>
+<input type="checkbox" id="ingredient-${index}" aria-label="Check off ${item}">
+<label for="ingredient-${index}">${item}</label>
+</li>`
+).join('')}
+</ul>
+</div>`;
+
+const initChecklistTool = () => {
+// Load saved state if any
+ingredients.forEach((_, index) => {
+const checkbox = document.getElementById(`ingredient-${index}`);
+if (checkbox) {
+const savedState = localStorage.getItem(`ingredient-${index}-checked`);
+if (savedState === 'true') {
+checkbox.checked = true;
+}
+checkbox.addEventListener('change', (event) => {
+localStorage.setItem(`ingredient-${index}-checked`, event.target.checked);
+});
+}
+});
+};
+
+checklistBtn.addEventListener('click', (event) => openToolModal('Ingredients Checklist', checklistToolHTML, event.currentTarget));
+
+// --- Note-taking Tool ---
+// Corrected: notesToolHTML now correctly defined as a template literal
+const notesToolHTML = `<div class="note-taking-tool">
+<h4>Your Personal Notes:</h4>
+<textarea id="user-notes" placeholder="Jot down any thoughts, modifications, or observations about the recipe here."></textarea>
+</div>`;
+
+const initNotesTool = () => {
+const userNotesTextarea = document.getElementById('user-notes');
+if (userNotesTextarea) {
+// Load saved notes
+const savedNotes = localStorage.getItem('egg-salad-user-notes');
+if (savedNotes) {
+userNotesTextarea.value = savedNotes;
+}
+// Save notes on input change
+userNotesTextarea.addEventListener('input', (event) => {
+localStorage.setItem('egg-salad-user-notes', event.target.value);
+});
+}
+};
+
+notesBtn.addEventListener('click', (event) => openToolModal('Notes', notesToolHTML, event.currentTarget));
+
+// --- No Chart Justification ---
+// As per the instructions, data visualizations are not included as they do not add significant value
+// to a recipe guide focused on practical application. The core learning outcome is best served
+// through clear, step-by-step instructions and interactive tools.
+}
+
+// Ensure mainInit runs after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', mainInit);
+</script>

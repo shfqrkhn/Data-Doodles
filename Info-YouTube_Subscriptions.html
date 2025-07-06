@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Curated Knowledge Stream</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            --background-colour: #F8F8F8; /* Light Grey */
+            --surface-colour: #FFFFFF; /* White */
+            --primary-text-colour: #2C3E50; /* Dark Blue-Grey */
+            --secondary-text-colour: #7F8C8D; /* Medium Grey */
+            --accent-primary: #3498DB; /* Vibrant Blue */
+            --accent-secondary: #2ECC71; /* Emerald Green */
+            --border-radius: 8px;
+            --padding-small: 12px;
+            --padding-medium: 16px;
+            --padding-large: 24px;
+            --font-family-headings: 'Inter', sans-serif;
+            --font-family-body: 'Inter', sans-serif;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: var(--font-family-body);
+            background-color: var(--background-colour);
+            color: var(--primary-text-colour);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-headings);
+            color: var(--primary-text-colour);
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: clamp(2em, 8vw, 3.5em); text-align: center; margin-top: var(--padding-large); }
+        h2 { font-size: clamp(1.5em, 6vw, 2.5em); text-align: center; }
+        h3 { font-size: clamp(1.2em, 5vw, 2em); margin-left: var(--padding-medium); }
+        h4 { font-size: clamp(1em, 4vw, 1.5em); margin-left: var(--padding-medium); }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover, a:focus {
+            color: var(--accent-secondary);
+            outline: none;
+        }
+
+        /* Layout & Containers */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 var(--padding-medium);
+            flex-grow: 1;
+        }
+
+        .card {
+            background-color: var(--surface-colour);
+            border-radius: var(--border-radius);
+            padding: var(--padding-medium);
+            margin-bottom: var(--padding-medium);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Banner Section */
+        .banner {
+            background-color: var(--accent-primary);
+            color: var(--surface-colour);
+            padding: var(--padding-large) var(--padding-medium);
+            text-align: center;
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            margin-bottom: var(--padding-large);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .banner h1 {
+            color: var(--surface-colour);
+            margin-top: 0;
+            margin-bottom: var(--padding-small);
+        }
+
+        .banner p {
+            font-size: clamp(0.9em, 3vw, 1.1em);
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        /* Interactive Centerpiece - Channel List */
+        .channel-list-section .card {
+            padding: var(--padding-small);
+        }
+
+        .channel-category details {
+            margin-bottom: 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .channel-category details[open] {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-primary);
+        }
+
+        .channel-category summary {
+            background-color: #F0F0F0;
+            padding: var(--padding-small) var(--padding-medium);
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            position: relative;
+            list-style: none; /* Hide default marker */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--primary-text-colour);
+            transition: background-color 0.2s ease;
+        }
+
+        .channel-category summary:hover {
+            background-color: #E5E5E5;
+        }
+
+        .channel-category summary::-webkit-details-marker {
+            display: none; /* Hide default marker for WebKit */
+        }
+
+        .channel-category summary::after {
+            content: '+';
+            font-size: 1.5em;
+            position: absolute;
+            right: var(--padding-medium);
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.2s ease;
+        }
+
+        .channel-category details[open] summary::after {
+            content: '-';
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .channel-category-content {
+            padding: var(--padding-small);
+            background-color: var(--surface-colour);
+        }
+
+        .channel-card {
+            display: flex;
+            flex-direction: column;
+            padding: var(--padding-small);
+            border-bottom: 1px solid #F0F0F0;
+            transition: background-color 0.2s ease;
+        }
+
+        .channel-card:last-child {
+            border-bottom: none;
+        }
+
+        .channel-card:hover {
+            background-color: #F9F9F9;
+        }
+
+        .channel-card a {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            word-break: break-word; /* Ensure long names wrap */
+        }
+
+        .channel-card p {
+            font-size: 0.9em;
+            color: var(--secondary-text-colour);
+            margin-bottom: 5px;
+        }
+
+        .channel-card span.subscribers {
+            font-size: 0.85em;
+            color: var(--secondary-text-colour);
+            font-style: italic;
+        }
+
+        /* Tools Navbar */
+        .navbar {
+            position: fixed; /* Changed from sticky to fixed for persistent floating behavior */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-text-colour);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .navbar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--padding-small) var(--padding-medium);
+            background-color: var(--primary-text-colour);
+            color: var(--surface-colour);
+            cursor: pointer;
+        }
+
+        .navbar-header h3 {
+            margin: 0;
+            color: var(--surface-colour);
+            font-size: 1.1em;
+        }
+
+        .navbar-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--surface-colour);
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-toggle-btn.rotated {
+            transform: rotate(180deg);
+        }
+
+        .navbar-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background-color: var(--surface-colour);
+            padding: 0 var(--padding-medium);
+        }
+
+        .navbar-content.open {
+            max-height: 500px; /* Adjust based on content height */
+            padding-top: var(--padding-medium);
+            padding-bottom: var(--padding-medium);
+        }
+
+        .navbar-tool {
+            margin-bottom: var(--padding-medium);
+        }
+
+        .navbar-tool label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--primary-text-colour);
+        }
+
+        .navbar-tool input[type="text"],
+        .navbar-tool select {
+            width: 100%; /* Simplified width */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .navbar-tool button {
+            background-color: var(--accent-primary);
+            color: var(--surface-colour);
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .navbar-tool button:hover,
+        .navbar-tool button:focus {
+            background-color: var(--accent-secondary);
+            outline: none;
+        }
+
+        /* Other Sections */
+        .section-title {
+            text-align: center;
+            margin-bottom: var(--padding-medium);
+            color: var(--accent-primary);
+        }
+
+        .section-content {
+            padding: var(--padding-small);
+        }
+
+        /* Action Plan */
+        .action-plan-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .action-plan-list li {
+            background-color: #F0F0F0;
+            padding: var(--padding-small);
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .action-plan-list li::before {
+            content: '✓'; /* Checkmark icon */
+            color: var(--accent-secondary);
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Sources */
+        .sources-section {
+            margin-top: var(--padding-large);
+            padding: var(--padding-medium);
+            background-color: var(--surface-colour);
+            border-top: 1px solid #E0E0E0;
+            border-radius: var(--border-radius);
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
+            margin-bottom: 60px; /* Add margin to account for fixed navbar */
+        }
+
+        .sources-section ul {
+            list-style-type: disc;
+            padding-left: var(--padding-large);
+        }
+
+        /* Focus states for accessibility */
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        a:focus-visible,
+        summary:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+            border-radius: var(--border-radius);
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 600px) {
+            .container {
+                padding: 0 var(--padding-large);
+            }
+
+            .banner {
+                padding: var(--padding-large) var(--padding-large);
+            }
+
+            .navbar-header h3 {
+                font-size: 1.2em;
+            }
+
+            .navbar-content.open {
+                max-height: 600px; /* More height for larger screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="banner">
+        <h1>My YouTube Universe</h1>
+        <p>An interactive overview of your subscribed channels, logically categorized for easy exploration and deeper insight into your learning journey.</p>
+    </header>
+
+    <main class="container">
+        <section class="channel-list-section">
+            <h2 class="section-title">Your Curated Knowledge Stream</h2>
+            <div id="channel-list-container">
+                <!-- Channels will be dynamically loaded here -->
+            </div>
+        </section>
+
+        <section class="deep-dive-section card">
+            <h2 class="section-title">Deep Dive Modules</h2>
+            <div class="section-content">
+                <h3>The Power of Curated Learning</h3>
+                <p>In the vast ocean of online content, curating your subscriptions isn't just about organization—it's about intentional learning. By categorizing your interests, you transform passive consumption into an active pursuit of knowledge. This structured approach helps you identify what truly resonates, avoid information overload, and build a more coherent understanding of complex topics by connecting disparate pieces of information.</p>
+
+                <h3>Decoding Your Interests</h3>
+                <p>Observing your subscription patterns can reveal fascinating insights into your intellectual curiosity. You might discover unexpected overlaps between seemingly unrelated fields, such as the engineering principles behind biological systems, or the economic implications of technological advancements. This cross-pollination of ideas is where true innovation and deeper understanding often emerge, allowing you to approach problems with a multi-faceted perspective.</p>
+
+                <h3>Beyond the Algorithm</h3>
+                <p>While algorithms are designed to keep you engaged, they often create echo chambers, limiting your exposure to diverse viewpoints and novel ideas. Actively exploring your categorized subscriptions, especially those you visit less frequently, can break this cycle. It encourages you to step outside your comfort zone, challenge existing assumptions, and consciously broaden your intellectual horizons, fostering a more robust and adaptable mindset.</p>
+            </div>
+        </section>
+
+        <section class="myth-faq-section card">
+            <h2 class="section-title">MythBusting & Advanced FAQ</h2>
+            <div class="section-content">
+                <h3>MythBusting</h3>
+                <h4>Myth: "More subscriptions mean more knowledge."</h4>
+                <p><strong>Debunk:</strong> While a wide array of subscriptions offers potential, sheer volume doesn't equate to deeper knowledge. Without organization and active engagement, a large subscription list can lead to information overload and superficial understanding. Quality of engagement and retention, facilitated by tools like categorization, are far more critical than the quantity of channels subscribed to.</p>
+
+                <h4>Myth: "YouTube's algorithm knows what I want."</h4>
+                <p><strong>Debunk:</strong> YouTube's algorithm is primarily optimized for maximizing watch time and engagement, not necessarily for diverse learning or comprehensive understanding. It tends to recommend content similar to what you've already watched, potentially creating an intellectual echo chamber. Intentional exploration, guided by your own categorized interests, is essential for truly expanding your knowledge base.</p>
+
+                <h3>Advanced FAQ</h3>
+                <h4>Q: How can I use this categorization to identify learning gaps or new areas of interest?</h4>
+                <p>A: By visually inspecting categories with fewer channels or those you rarely engage with, you can pinpoint potential knowledge gaps. Conversely, by noticing recurring themes across different categories, you might identify emerging interests that warrant deeper exploration or new subscription additions in those specific niches.</p>
+
+                <h4>Q: What strategies can I employ to actively engage with this content rather than passively consuming it?</h4>
+                <p>A: Beyond just watching, try taking notes, summarizing key takeaways, discussing videos with others, or even attempting small projects inspired by the content. For technical channels, try to replicate experiments or code. For analytical channels, challenge their arguments or research counter-points. Active engagement transforms consumption into true learning.</p>
+
+                <h4>Q: How do I manage an ever-growing list of subscriptions effectively?</h4>
+                <p>A: Regularly review your categories. Unsubscribe from channels that no longer align with your interests or provide value. Consider setting a "watch budget" for each category to ensure balanced consumption. Periodically re-categorize channels as your interests evolve, keeping your curated list dynamic and relevant.</p>
+            </div>
+        </section>
+
+        <section class="action-plan-section card">
+            <h2 class="section-title">Graduated Action Plan</h2>
+            <div class="section-content">
+                <h3>Foundational Steps</h3>
+                <ul class="action-plan-list">
+                    <li>Review your current categories and identify your top 3 most-watched channels within each.</li>
+                    <li>Spend 15 minutes exploring a channel from a category you rarely visit.</li>
+                    <li>Use the search bar to find a specific topic across all your subscribed channels.</li>
+                </ul>
+
+                <h3>Intermediate Challenges</h3>
+                <ul class="action-plan-list">
+                    <li>Watch one video from a "new-to-you" channel in a category you're interested in, once a week.</li>
+                    <li>Try to articulate one key takeaway from a video immediately after watching it.</li>
+                    <li>Use the sort function to see which channels have the most/least subscribers in a category.</li>
+                </ul>
+
+                <h3>Advanced Engagements</h3>
+                <ul class="action-plan-list">
+                    <li>Identify a problem or question that spans two or more of your categories and research it using channels from each.</li>
+                    <li>Create a small personal project (e.g., a short summary, a simple diagram, a piece of code) based on a concept learned from one of your subscriptions.</li>
+                    <li>Share an interesting video from one of your less-watched channels with a friend or colleague.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="sources-section">
+        <h3>Sources</h3>
+        <ul>
+            <li><a href="https://www.google.com/search?q=Academic+consensus+on+learning+and+digital+content+consumption" target="_blank">Academic consensus on learning and digital content consumption</a></li>
+            <li><a href="https://www.google.com/search?q=Industry+reports+on+YouTube+algorithm+behavior" target="_blank">Industry reports on YouTube algorithm behavior</a></li>
+            <li><a href="https://www.google.com/search?q=Cognitive+science+principles+of+information+processing" target="_blank">Cognitive science principles of information processing</a></li>
+        </ul>
+    </footer>
+
+    <nav class="navbar">
+        <div class="navbar-header" id="navbar-header">
+            <h3>Tools</h3>
+            <button class="navbar-toggle-btn" id="navbar-toggle-btn" aria-expanded="false">▼</button>
+        </div>
+        <div class="navbar-content" id="navbar-content">
+            <div class="navbar-tool">
+                <label for="search-channels">Search Channels:</label>
+                <input type="text" id="search-channels" placeholder="e.g., science, engineering, AI">
+            </div>
+            <div class="navbar-tool">
+                <label for="sort-channels">Sort Channels by Subscribers:</label>
+                <select id="sort-channels">
+                    <option value="none">Default</option>
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+            <div class="navbar-tool">
+                <label for="filter-category">Filter by Category:</label>
+                <select id="filter-category">
+                    <option value="all">All Categories</option>
+                    <!-- Categories will be populated by JS -->
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Data for YouTube channels (from your provided list)
+        const channelsData = {
+            "Science & Discovery": [
+                { name: "PBS Eons", url: "https://www.google.com/search?q=" + encodeURIComponent("PBS Eons"), subscribers: "3.11M", description: "Join hosts Kallie Moore, Michelle Barboza-Ramirez, Gabriel Santos, and Blake de Pastino as they take you on a journey through the history of life on Earth." },
+                { name: "Kurzgesagt – In a Nutshell", url: "https://www.google.com/search?q=" + encodeURIComponent("Kurzgesagt – In a Nutshell"), subscribers: "24.3M", description: "Animation videos explaining things with optimistic nihilism since 12,013." },
+                { name: "SciShow", url: "https://www.google.com/search?q=" + encodeURIComponent("SciShow"), subscribers: "8.22M", description: "SciShow explores the unexpected. We delve into the scientific subjects that defy our expectations and make us even more curious!" },
+                { name: "Veritasium", url: "https://www.google.com/search?q=" + encodeURIComponent("Veritasium"), subscribers: "18.2M", description: "An element of truth - videos about science, education, and anything else we find interesting." },
+                { name: "SmarterEveryDay", url: "https://www.google.com/search?q=" + encodeURIComponent("SmarterEveryDay"), subscribers: "11.7M", description: "I explore the world using science. That's pretty much all there is to it." },
+                { name: "Real Science", url: "https://www.google.com/search?q=" + encodeURIComponent("Real Science"), subscribers: "1.93M", description: "An exploration of the world's life science subjects." },
+                { name: "Science ABC", url: "https://www.google.com/search?q=" + encodeURIComponent("Science ABC"), subscribers: "492K", description: "Science gets a bad rep for being boring, difficult and for very smart people (see: nerds)." },
+                { name: "MinutePhysics", url: "https://www.google.com/search?q=" + encodeURIComponent("MinutePhysics"), subscribers: "5.87M", description: "Simply put: cool physics and other sweet science." },
+                { name: "Deep Look", url: "https://www.google.com/search?q=" + encodeURIComponent("Deep Look"), subscribers: "2.33M", description: "DEEP LOOK is a science video series that explores big science by going very, very small, from KQED and PBS Digital Studios." },
+                { name: "Joe Scott", url: "https://www.google.com/search?q=" + encodeURIComponent("Joe Scott"), subscribers: "2.35M", description: "Ask Questions. Get interesting, amazing, funny, inspiring, eye-opening, mind-shifting, informative answers." },
+                { name: "AsapSCIENCE", url: "https://www.google.com/search?q=" + encodeURIComponent("AsapSCIENCE"), subscribers: "10.7M", description: "Making science make sense." },
+                { name: "Sprouts", url: "https://www.google.com/search?q=" + encodeURIComponent("Sprouts"), subscribers: "1.87M", description: "We create cartoons that explain complicated ideas in simple language." },
+                { name: "Steve Mould", url: "https://www.google.com/search?q=" + encodeURIComponent("Steve Mould"), subscribers: "3.36M", description: "I make videos about science. I also write books!" },
+                { name: "Bizarre Beasts", url: "https://www.google.com/search?q=" + encodeURIComponent("Bizarre Beasts"), subscribers: "353K", description: "What makes a weird animal weird?" },
+                { name: "CrashCourse", url: "https://www.google.com/search?q=" + encodeURIComponent("CrashCourse"), subscribers: "16.4M", description: "At Crash Course, we believe that high-quality educational videos should be available to everyone for free!" },
+                { name: "Einzelgänger", url: "https://www.google.com/search?q=" + encodeURIComponent("Einzelgänger"), subscribers: "2.35M", description: "Einzelgänger explores a wide range of topics and ideas, with a dose of \"as I see it,\" out of curiosity and creative urge." }
+            ],
+            "Engineering & Practical Skills": [
+                { name: "Electrician U", url: "https://www.google.com/search?q=" + encodeURIComponent("Electrician U"), subscribers: "837K", description: "This site is for those of you who are passionate and intrigued by electricity." },
+                { name: "Practical Engineering", url: "https://www.google.com/search?q=" + encodeURIComponent("Practical Engineering"), subscribers: "4.46M", description: "Practical Engineering is all about infrastructure and the human-made world around us." },
+                { name: "Andrew Lam", url: "https://www.google.com/search?q=" + encodeURIComponent("Andrew Lam"), subscribers: "214K", description: "Helping you appreciate the world by revealing the amazing and hidden engineering that make our everyday life possible" },
+                { name: "Roger Wakefield Plumbing Education", url: "https://www.google.com/search?q=" + encodeURIComponent("Roger Wakefield Plumbing Education"), subscribers: "675K", description: "I want to help you learn the world of plumbing." },
+                { name: "Project Farm", url: "https://www.google.com/search?q=" + encodeURIComponent("Project Farm"), subscribers: "3.56M", description: "I test all sorts of things, from tools to automotive products, to help viewers make informed purchasing decisions and to avoid getting ripped off." },
+                { name: "The Engineering Mindset", url: "https://www.google.com/search?q=" + encodeURIComponent("The Engineering Mindset"), subscribers: "4.05M", description: "Subscribe now to gain core Engineering knowledge and skills through mind-blowing tutorials" },
+                { name: "Technology Connextras", url: "https://www.google.com/search?q=" + encodeURIComponent("Technology Connextras"), subscribers: "418K", description: "No description provided." },
+                { name: "Technology Connections", url: "https://www.google.com/search?q=" + encodeURIComponent("Technology Connections"), subscribers: "2.83M", description: "No description provided." },
+                { name: "Real Engineering", url: "https://www.google.com/search?q=" + encodeURIComponent("Real Engineering"), subscribers: "4.84M", description: "The home of innovation" },
+                { name: "New Mind", url: "https://www.google.com/search?q=" + encodeURIComponent("New Mind"), subscribers: "711K", description: "For most of us, our average day is an experience unlike any other in human history." },
+                { name: "Undecided with Matt Ferrell", url: "https://www.google.com/search?q=" + encodeURIComponent("Undecided with Matt Ferrell"), subscribers: "1.64M", description: "As a UI/UX designer by trade, I explore how sustainable and smart technologies impact our lives." },
+                { name: "Ziroth", url: "https://www.google.com/search?q=" + encodeURIComponent("Ziroth"), subscribers: "399K", description: "This channel focuses on highlighting new science and engineering projects that are helping the world transition to a zero carbon future!" },
+                { name: "Animagraffs", url: "https://www.google.com/search?q=" + encodeURIComponent("Animagraffs"), subscribers: "1.65M", description: "I'm Jake O'Neal, and I make 3D animated explainer videos that strive to be accurate and smart, but also entertaining." },
+                { name: "engineerguy", url: "https://www.google.com/search?q=" + encodeURIComponent("engineerguy"), subscribers: "1.54M", description: "Bill Hammack explores the world of engineering" },
+                { name: "How To Home", url: "https://www.google.com/search?q=" + encodeURIComponent("How To Home"), subscribers: "691K", description: "From law enforcement officer back to the construction industry I was raised around, I share and create content focused on DIY, how tos, tips and tricks, and reviews of products used around the home." }
+            ],
+            "Technology & AI": [
+                { name: "WorldofAI", url: "https://www.google.com/search?q=" + encodeURIComponent("WorldofAI"), subscribers: "144K", description: "World of Ai is here to push the creative use of Artificial Intelligence (AI) applications for simple day-to-day tasks!" },
+                { name: "Designing With AI", url: "https://www.google.com/search?q=" + encodeURIComponent("Designing With AI"), subscribers: "1.44K", description: "Hi, I'm Victor, Hacker, Research Scientist focused on Generative AI, Agents, and Multi-Agent Systems." },
+                { name: "Creator Magic", url: "https://www.google.com/search?q=" + encodeURIComponent("Creator Magic"), subscribers: "155K", description: "Creator Magic explores the latest AI tools and news, with a focus on AI coding." },
+                { name: "Matt Wolfe", url: "https://www.google.com/search?q=" + encodeURIComponent("Matt Wolfe"), subscribers: "773K", description: "AI News Breakdowns every Saturday and other cool nerdy tech and AI stuff in between." },
+                { name: "Tina Huang", url: "https://www.google.com/search?q=" + encodeURIComponent("Tina Huang"), subscribers: "914K", description: "Hi! My name is Tina and I’m an ex-Meta data scientist. This channel is about AI, coding, tech, career and self-study." },
+                { name: "Linus Tech Tips", url: "https://www.google.com/search?q=" + encodeURIComponent("Linus Tech Tips"), subscribers: "16.4M", description: "Linus Tech Tips is a passionate team of \"professionally curious\" experts in consumer technology and video production who aim to educate and entertain." },
+                { name: "Marques Brownlee", url: "https://www.google.com/search?q=" + encodeURIComponent("Marques Brownlee"), subscribers: "20.1M", description: "MKBHD: Quality Tech Videos | YouTuber | Geek | Consumer Electronics | Tech Head | Internet Personality!" },
+                { name: "ColdFusion", url: "https://www.google.com/search?q=" + encodeURIComponent("ColdFusion"), subscribers: "5.05M", description: "Hi, my name is Dagogo Altraide and I create and narrate all the videos on here." }
+            ],
+            "Finance & Economics": [
+                { name: "The Wealthy Barber", url: "https://www.google.com/search?q=" + encodeURIComponent("The Wealthy Barber"), subscribers: "6.94K", description: "Personal finance made simple." },
+                { name: "How Money Works", url: "https://www.google.com/search?q=" + encodeURIComponent("How Money Works"), subscribers: "1.45M", description: "Subscribe to learn How Money Works." },
+                { name: "Ben Felix", url: "https://www.google.com/search?q=" + encodeURIComponent("Ben Felix"), subscribers: "452K", description: "I post videos on investing, financial decision-making, and living a good life." },
+                { name: "Modern MBA", url: "https://www.google.com/search?q=" + encodeURIComponent("Modern MBA"), subscribers: "705K", description: "Modern MBA is democratizing business education through Wall Street case studies on the Fortune 500 and everyday industries you'll never find online." },
+                { name: "Economics Explained", url: "https://www.google.com/search?q=" + encodeURIComponent("Economics Explained"), subscribers: "2.77M", description: "No description provided." }
+            ],
+            "Urbanism & Global Systems": [
+                { name: "Not Just Bikes", url: "https://www.google.com/search?q=" + encodeURIComponent("Not Just Bikes"), subscribers: "1.37M", description: "Stories of great urban planning & urban experiences." },
+                { name: "City Beautiful", url: "https://www.google.com/search?q=" + encodeURIComponent("City Beautiful"), subscribers: "727K", description: "City Beautiful is a YouTube channel dedicated to educating everyone about cities and city planning." },
+                { name: "Wendover Productions", url: "https://www.google.com/search?q=" + encodeURIComponent("Wendover Productions"), subscribers: "4.81M", description: "Wendover Productions is all about explaining how our world works." },
+                { name: "Extremities", url: "https://www.google.com/search?q=" + encodeURIComponent("Extremities"), subscribers: "159K", description: "How and why the world's most remote settlements exist" },
+                { name: "PolyMatter", url: "https://www.google.com/search?q=" + encodeURIComponent("PolyMatter"), subscribers: "1.93M", description: "How do I make my videos?" },
+                { name: "Mustard", url: "https://www.google.com/search?q=" + encodeURIComponent("Mustard"), subscribers: "2.21M", description: "Mustard explores curious and often little known topics and strives to make them entertaining by focusing on beautiful presentations, engaging narratives...and maybe a little humor too." }
+            ],
+            "Current Affairs & Critical Thinking": [
+                { name: "Search Party", url: "https://www.google.com/search?q=" + encodeURIComponent("Search Party"), subscribers: "730K", description: "Search Party is a new independent video journalism project that will investigate and decode the most important and complicated news around geopolitics and global sports." },
+                { name: "Johnny Harris", url: "https://www.google.com/search?q=" + encodeURIComponent("Johnny Harris"), subscribers: "6.78M", description: "Independent journalist making videos that help you better understand the world" },
+                { name: "Christophe", url: "https://www.google.com/search?q=" + encodeURIComponent("Christophe"), subscribers: "191K", description: "Hello and welcome! Tunnel Vision is a new independent video news show that dives deep into mysteries from all corners of the internet." },
+                { name: "CaspianReport", url: "https://www.google.com/search?q=" + encodeURIComponent("CaspianReport"), subscribers: "1.77M", description: "We try to make sense of an increasingly complicated world by cutting through the noise and analysing geopolitical trends." },
+                { name: "Adam Conover", url: "https://www.google.com/search?q=" + encodeURIComponent("Adam Conover"), subscribers: "886K", description: "I am a standup comedian, a television host, and a curious person who never stops asking questions." },
+                { name: "Coffeezilla", url: "https://www.google.com/search?q=" + encodeURIComponent("Coffeezilla"), subscribers: "4.24M", description: "I uncover scams, fraudsters and fake gurus that are preying on desperate people with deceptive advertising." },
+                { name: "neo", url: "https://www.google.com/search?q=" + encodeURIComponent("neo"), subscribers: "2.76M", description: "Neo creates educational short documentaries about topics ranging from politics, geography, media, society, and more." },
+                { name: "How History Works", url: "https://www.google.com/search?q=" + encodeURIComponent("How History Works"), subscribers: "194K", description: "It's time to learn How History Works!" }
+            ],
+            "Health & Anatomy": [
+                { name: "Institute of Human Anatomy", url: "https://www.google.com/search?q=" + encodeURIComponent("Institute of Human Anatomy"), subscribers: "8.46M", description: "🧠 The Institute of Human Anatomy (\"IOHA\") is a private human cadaver laboratory that educates health, fitness, and medical professionals on human anatomy and physiology using real human cadavers." },
+                { name: "Chubbyemu", url: "https://www.google.com/search?q=" + encodeURIComponent("Chubbyemu"), subscribers: "3.16M", description: "We tell stories in medicine. These are variations on cases we, or our colleagues, have seen in the past." }
+            ],
+            "Storytelling & Media Analysis": [
+                { name: "Nerdwriter1", url: "https://www.google.com/search?q=" + encodeURIComponent("Nerdwriter1"), subscribers: "3.21M", description: "The Nerdwriter is a video series about art and culture." },
+                { name: "Lessons from the Screenplay", url: "https://www.google.com/search?q=" + encodeURIComponent("Lessons from the Screenplay"), subscribers: "1.5M", description: "I believe that a more informed audience raises the bar for storytelling." },
+                { name: "Screened", url: "https://www.google.com/search?q=" + encodeURIComponent("Screened"), subscribers: "308K", description: "This channel is for people in need of a helpful nudge out of a writer's block, or for providing inspiring material for your next short film or to garner a deeper appreciation of a movie you already loved or never even heard of." },
+                { name: "Alt Shift X", url: "https://www.google.com/search?q=" + encodeURIComponent("Alt Shift X"), subscribers: "1.96M", description: "Covering Game of Thrones, House of the Dragon, ASOIAF, Dune, The Expanse, and more." }
+            ],
+            "Unique Perspectives & Entertainment": [
+                { name: "Big Think", url: "https://www.google.com/search?q=" + encodeURIComponent("Big Think"), subscribers: "7.99M", description: "Big Think is the leading source of expert-driven, actionable, educational content -- with thousands of videos, featuring experts ranging from Bill Clinton to Bill Nye, we help you get smarter, faster." },
+                { name: "Half as Interesting", url: "https://www.google.com/search?q=" + encodeURIComponent("Half as Interesting"), subscribers: "2.89M", description: "Education-y explainer videos that are almost good enough to watch." },
+                { name: "LegalEagle", url: "https://www.google.com/search?q=" + encodeURIComponent("LegalEagle"), subscribers: "3.73M", description: "Do you want to know how our legal system works? You’ve come to the right place." },
+                { name: "MrBallen", url: "https://www.google.com/search?q=" + encodeURIComponent("MrBallen"), subscribers: "10.1M", description: "I tell strange, dark & mysterious stories." },
+                { name: "Captain Disillusion", url: "https://www.google.com/search?q=" + encodeURIComponent("Captain Disillusion"), subscribers: "2.53M", description: "In a world where the content of digital images and videos can no longer be taken at face value, an unlikely hero fights for the acceptance of truth." },
+                { name: "Josh Johnson", url: "https://www.google.com/search?q=" + encodeURIComponent("Josh Johnson"), subscribers: "1.76M", description: "No description provided." },
+                { name: "Ze Frank", url: "https://www.google.com/search?q=" + encodeURIComponent("Ze Frank"), subscribers: "4.22M", description: "Shirts and merch! https://ze-true-store.myshopify.com/ https://www.patreon.com/truefacts" },
+                { name: "WheezyWaiter", url: "https://www.google.com/search?q=" + encodeURIComponent("WheezyWaiter"), subscribers: "1.16M", description: "I’ve been on Earth for 44 years, Here’s what I learned. (I hope I remember to update after my birthday)" }
+            ]
+        };
+
+        // Function to convert subscriber count string (e.g., "3.11M", "837K") to a number
+        function parseSubscribers(subscribersStr) {
+            if (!subscribersStr) return 0;
+            const multiplier = subscribersStr.includes('M') ? 1000000 : (subscribersStr.includes('K') ? 1000 : 1);
+            return parseFloat(subscribersStr.replace(/[MK]/g, '')) * multiplier;
+        }
+
+        // Function to render channels
+        function renderChannels(data, searchTerm = '', sortOrder = 'none', filterCategory = 'all') {
+            const container = document.getElementById('channel-list-container');
+            container.innerHTML = ''; // Clear previous content
+
+            let filteredAndSortedData = {};
+
+            // Filter by category first
+            if (filterCategory !== 'all') {
+                if (data[filterCategory]) {
+                    filteredAndSortedData[filterCategory] = [...data[filterCategory]];
+                }
+            } else {
+                // If 'all', copy all categories
+                for (const category in data) {
+                    filteredAndSortedData[category] = [...data[category]];
+                }
+            }
+
+            // Apply search term and sort within each category
+            for (const category in filteredAndSortedData) {
+                let channels = filteredAndSortedData[category];
+
+                // Search filtering
+                if (searchTerm) {
+                    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+                    channels = channels.filter(channel =>
+                        channel.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+                        (channel.description && channel.description.toLowerCase().includes(lowerCaseSearchTerm))
+                    );
+                }
+
+                // Sort by subscribers
+                if (sortOrder !== 'none') {
+                    channels.sort((a, b) => {
+                        const subsA = parseSubscribers(a.subscribers);
+                        const subsB = parseSubscribers(b.subscribers);
+                        return sortOrder === 'asc' ? subsA - subsB : subsB - subsA;
+                    });
+                }
+                filteredAndSortedData[category] = channels;
+            }
+
+            // Render the filtered and sorted data
+            for (const category in filteredAndSortedData) {
+                const channels = filteredAndSortedData[category];
+                if (channels.length === 0) continue; // Skip empty categories after filtering
+
+                const categoryDetails = document.createElement('details');
+                const detailsId = `category-${category.replace(/\s+/g, '-')}`; // Unique ID for details element
+                categoryDetails.setAttribute('id', detailsId);
+                categoryDetails.classList.add('channel-category');
+                categoryDetails.setAttribute('role', 'group'); // ARIA role for accordion
+
+                const summary = document.createElement('summary');
+                const summaryId = `summary-${category.replace(/\s+/g, '-')}`; // Create unique ID for summary
+                summary.setAttribute('id', summaryId); // Set ID
+                summary.textContent = category;
+                summary.setAttribute('role', 'button'); // ARIA role for button
+                summary.setAttribute('aria-expanded', 'false'); // ARIA state
+
+                const contentDiv = document.createElement('div');
+                const contentDivId = `content-${category.replace(/\s+/g, '-')}`; // Create unique ID for content
+                contentDiv.classList.add('channel-category-content');
+                contentDiv.setAttribute('id', contentDivId); // Set ID
+                contentDiv.setAttribute('role', 'region'); // ARIA role for region
+                contentDiv.setAttribute('aria-labelledby', summaryId); // Reference summary ID
+
+                // Link aria-controls from summary to contentDiv
+                summary.setAttribute('aria-controls', contentDivId);
+
+
+                channels.forEach(channel => {
+                    const channelCard = document.createElement('div');
+                    channelCard.classList.add('channel-card');
+                    channelCard.innerHTML = `
+                        <a href="${channel.url}" target="_blank" rel="noopener noreferrer">${channel.name}</a>
+                        <p>${channel.description || 'No description provided.'}</p>
+                        <span class="subscribers">${channel.subscribers} subscribers</span>
+                    `;
+                    contentDiv.appendChild(channelCard);
+                });
+
+                categoryDetails.appendChild(summary);
+                categoryDetails.appendChild(contentDiv);
+                container.appendChild(categoryDetails);
+
+                // Add event listener for accordion behavior
+                categoryDetails.addEventListener('toggle', (event) => {
+                    summary.setAttribute('aria-expanded', categoryDetails.open);
+                    if (categoryDetails.open) {
+                        // Close other open details elements
+                        document.querySelectorAll('.channel-category[open]').forEach(openDetails => {
+                            if (openDetails !== categoryDetails) {
+                                openDetails.removeAttribute('open');
+                                openDetails.querySelector('summary').setAttribute('aria-expanded', 'false');
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        // Function to populate category filter dropdown
+        function populateCategoryFilter() {
+            const filterSelect = document.getElementById('filter-category');
+            for (const category in channelsData) {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                filterSelect.appendChild(option);
+            }
+        }
+
+        // Main initialization function
+        function mainInit() {
+            renderChannels(channelsData); // Initial render
+
+            populateCategoryFilter();
+
+            // Get elements for tools
+            const searchInput = document.getElementById('search-channels');
+            const sortSelect = document.getElementById('sort-channels');
+            const filterSelect = document.getElementById('filter-category');
+            const navbarHeader = document.getElementById('navbar-header');
+            const navbarContent = document.getElementById('navbar-content');
+            const navbarToggleBtn = document.getElementById('navbar-toggle-btn');
+
+            // Event Listeners for tools
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value;
+                const sortOrder = sortSelect.value;
+                const filterCategory = filterSelect.value;
+                renderChannels(channelsData, searchTerm, sortOrder, filterCategory);
+            });
+
+            sortSelect.addEventListener('change', () => {
+                const searchTerm = searchInput.value;
+                const sortOrder = sortSelect.value;
+                const filterCategory = filterSelect.value;
+                renderChannels(channelsData, searchTerm, sortOrder, filterCategory);
+            });
+
+            filterSelect.addEventListener('change', () => {
+                const searchTerm = searchInput.value;
+                const sortOrder = sortSelect.value;
+                const filterCategory = filterSelect.value;
+                renderChannels(channelsData, searchTerm, sortOrder, filterCategory);
+            });
+
+            // Navbar toggle functionality
+            navbarHeader.addEventListener('click', () => {
+                const isOpen = navbarContent.classList.toggle('open');
+                navbarToggleBtn.classList.toggle('rotated', isOpen);
+                navbarToggleBtn.setAttribute('aria-expanded', isOpen);
+            });
+        }
+
+        // Ensure DOM is fully loaded before running mainInit
+        document.addEventListener('DOMContentLoaded', mainInit);
+    </script>
+</body>
+</html>
