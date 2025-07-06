@@ -12,7 +12,7 @@ Explore the collection of visualizations below, organized by category. Each link
 | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Guides** | [Hades: The Eris Protocol](https://shfqrkhn.github.io/Data-Doodles/Guide_Game-Hades_The_Eris_Protocol.html) |
 | **Guides** | [The Canadian Eco-Garden Planner](https://shfqrkhn.github.io/Data-Doodles/Guide_Gardening-The_Canadian_Eco-Garden_Planner.html) |
-| **Guides** | [Wishlist Machine](https://shfqrkhn.github.io/Data-Doodles/Guide_Wishlist_Machine.html) |
+| **Guides** | [The Wishlist Machine](https://shfqrkhn.github.io/Data-Doodles/Guide_Other-The_Wishlist_Machine.html) |
 | **Information** | [YouTube Subscriptions](https://shfqrkhn.github.io/Data-Doodles/Info-YouTube_Subscriptions.html) |
 | **Recipes** | [The Apex Egg Salad](https://shfqrkhn.github.io/Data-Doodles/Recipe-The_Apex_Egg_Salad.html) |
 
