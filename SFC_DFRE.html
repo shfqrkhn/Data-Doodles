@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion - SFC/DFRE</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .main-card:hover {
+            transform: translateY(-5px);
+        }
+        .form-control, .form-select {
+            height: 50px;
+        }
+        .result-card {
+            background: linear-gradient(135deg, #0d6efd, #6f42c1);
+            color: white;
+            transition: transform 0.3s ease-in-out;
+        }
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .result-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .explanation {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+        }
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+        .summary-table {
+            font-size: 0.9rem;
+        }
+        .lang-btn {
+            opacity: 0.6;
+            padding: 0.25rem 0.5rem;
+        }
+        .lang-btn.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+        .lang-switcher-wrapper {
+            margin-bottom: -1rem; /* Pulls the switcher up slightly */
+        }
+
+        /* Responsive Typography */
+        @media (max-width: 576px) {
+            #main-title {
+                font-size: 1.75rem;
+            }
+            .result-value {
+                font-size: 2rem;
+            }
+            .result-label {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <!-- Main Calculator Card -->
+                <div class="card main-card p-2 p-sm-3 p-md-4 mb-5">
+                    <div class="card-body">
+                        <!-- Language Switcher -->
+                        <div class="d-flex justify-content-end lang-switcher-wrapper">
+                            <div>
+                                <button id="lang-en" class="btn btn-link text-decoration-none lang-btn active">EN</button> |
+                                <button id="lang-fr" class="btn btn-link text-decoration-none lang-btn">FR</button>
+                            </div>
+                        </div>
+
+                        <h1 id="main-title" class="card-title text-center fw-bold mb-3">Conversion - SFC/DFRE</h1>
+                        <p id="main-subtitle" class="card-text text-center text-muted mb-4">Select an activity and enter its details to estimate your steps.</p>
+
+                        <!-- Activity Selector -->
+                        <div class="mb-4">
+                            <label for="activity" id="activity-label" class="form-label fw-medium">Select Activity</label>
+                            <select id="activity" class="form-select form-select-lg"></select>
+                        </div>
+
+                        <!-- Input Fields -->
+                        <div class="row g-3 mb-4">
+                            <div id="distance-container" class="col-12 col-sm-4 d-none">
+                                <label for="distance" id="distance-label-text" class="form-label fw-medium">Distance (km)</label>
+                                <input type="number" id="distance" value="5" min="0" step="0.1" class="form-control" placeholder="e.g., 5">
+                            </div>
+                            <div id="minutes-container" class="col-12 col-sm-4">
+                                <label for="minutes" id="minutes-label" class="form-label fw-medium">Minutes</label>
+                                <input type="number" id="minutes" value="35" min="0" class="form-control" placeholder="e.g., 35">
+                            </div>
+                            <div id="seconds-container" class="col-12 col-sm-4">
+                                <label for="seconds" id="seconds-label" class="form-label fw-medium">Seconds</label>
+                                <input type="number" id="seconds" value="32" min="0" max="59" class="form-control" placeholder="e.g., 32">
+                            </div>
+                        </div>
+
+                        <!-- Result Section -->
+                        <div id="result" class="card result-card p-4 mb-4">
+                            <div id="result-grid" class="row align-items-center">
+                                <div id="steps-result-container" class="col-12 text-center mb-3 mb-md-0">
+                                    <p id="steps-label" class="result-label"><i class="bi bi-person-walking me-2"></i>Estimated Steps</p>
+                                    <p id="stepsResult" class="result-value mb-0">0</p>
+                                </div>
+                                <div id="speed-result-container" class="col-12 text-center d-none">
+                                    <p id="speed-label" class="result-label"><i class="bi bi-speedometer2 me-2"></i>Avg. Speed (kph)</p>
+                                    <p id="speedResult" class="result-value mb-0">0.00</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Explanation Section -->
+                        <div class="explanation p-3 rounded">
+                             <h5 id="explanation-title" class="fw-semibold"><i class="bi bi-info-circle me-2"></i>How It Works</h5>
+                             <p id="explanation-text" class="mb-0 text-muted"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Table Card -->
+                <div class="card p-2 p-sm-3 p-md-4">
+                    <div class="card-body">
+                        <h2 id="summary-title" class="card-title text-center fw-bold mb-4">Conversion Factor Summary</h2>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover summary-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th id="summary-activity-header">Activity</th>
+                                        <th id="summary-factor-header">Conversion Factor (Steps per Minute)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summary-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- LANGUAGE & DATA MODULE -->
+    <script>
+        const Lang = {
+            current: 'en',
+            set(lang) {
+                this.current = lang;
+                App.render();
+            },
+            get(key) {
+                return this.translations[this.current][key] || key;
+            },
+            translations: {
+                en: {
+                    mainTitle: "Conversion - SFC/DFRE",
+                    mainSubtitle: "Select an activity and enter its details to estimate your steps.",
+                    activityLabel: "Select Activity",
+                    distanceLabel: "Distance",
+                    minutesLabel: "Minutes",
+                    secondsLabel: "Seconds",
+                    stepsLabel: "Estimated Steps",
+                    speedLabel: "Avg. Speed",
+                    explanationTitle: "How It Works",
+                    summaryTitle: "Conversion Factor Summary",
+                    summaryActivityHeader: "Activity",
+                    summaryFactorHeader: "Conversion Factor (Steps per Minute)",
+                    explanationSimple: "Based on a standard rate of <strong>{stepsPerMinute} steps per minute</strong> for this activity.",
+                    explanationSpeed: "Your pace of <strong>{avgSpeed} {unit}</strong> equates to roughly <strong>{stepsPerMinute} steps/min</strong>.",
+                    explanationInvalid: "Please enter a valid time."
+                },
+                fr: {
+                    mainTitle: "Conversion - SFC/DFRE",
+                    mainSubtitle: "Sélectionnez une activité et entrez les détails pour estimer vos pas.",
+                    activityLabel: "Sélectionner l'Activité",
+                    distanceLabel: "Distance",
+                    minutesLabel: "Minutes",
+                    secondsLabel: "Secondes",
+                    stepsLabel: "Pas Estimés",
+                    speedLabel: "Vitesse Moy.",
+                    explanationTitle: "Comment Ça Marche",
+                    summaryTitle: "Résumé des Facteurs de Conversion",
+                    summaryActivityHeader: "Activité",
+                    summaryFactorHeader: "Facteur de Conversion (Pas par Minute)",
+                    explanationSimple: "Basé sur un taux standard de <strong>{stepsPerMinute} pas par minute</strong> pour cette activité.",
+                    explanationSpeed: "Votre rythme de <strong>{avgSpeed} {unit}</strong> équivaut à environ <strong>{stepsPerMinute} pas/min</strong>.",
+                    explanationInvalid: "Veuillez entrer une durée valide."
+                }
+            }
+        };
+
+        const Data = {
+            activities: [
+                { id: "aerobics_high", name: { en: "Aerobics, high intensity", fr: "Aérobie, haute intensité" }, steps: 190, type: 'simple' },
+                { id: "aerobics_low", name: { en: "Aerobics, low intensity", fr: "Aérobie, basse intensité" }, steps: 115, type: 'simple' },
+                { id: "aerobics_step", name: { en: "Aerobics, step", fr: "Aérobie, step" }, steps: 145, type: 'simple' },
+                { id: "badminton_game", name: { en: "Badminton, game", fr: "Badminton, match" }, steps: 150, type: 'simple' },
+                { id: "badminton_rec", name: { en: "Badminton, recreational", fr: "Badminton, récréatif" }, steps: 98, type: 'simple' },
+                { id: "basketball_game", name: { en: "Basketball, game", fr: "Basketball, match" }, steps: 220, type: 'simple' },
+                { id: "basketball_rec", name: { en: "Basketball, recreational", fr: "Basketball, récréatif" }, steps: 130, type: 'simple' },
+                { id: "boxing_comp", name: { en: "Boxing, competitive, in a ring", fr: "Boxe, compétition, sur un ring" }, steps: 213, type: 'simple' },
+                { id: "boxing_noncomp", name: { en: "Boxing, non-competitive", fr: "Boxe, sans compétition" }, steps: 131, type: 'simple' },
+                { id: "canoeing", name: { en: "Canoeing, leisurely (4 kmph)", fr: "Canotage, tranquille (4 km/h)" }, steps: 70, type: 'simple' },
+                { id: "cycling", name: { en: "Cycling", fr: "Cyclisme" }, type: 'speed_based', points: [{ speed: 8, steps: 55 }, { speed: 16, steps: 93 }, { speed: 24, steps: 160 }, { speed: 32, steps: 200 }], unit: 'kph' },
+                { id: "dancing_fast", name: { en: "Dancing, fast", fr: "Danse, rapide" }, steps: 175, type: 'simple' },
+                { id: "dancing_slow", name: { en: "Dancing, slow", fr: "Danse, lente" }, steps: 55, type: 'simple' },
+                { id: "dancing_social", name: { en: "Dancing, socially (rock, disco, etc)", fr: "Danse, sociale (rock, disco, etc.)" }, steps: 100, type: 'simple' },
+                { id: "elliptical_fast", name: { en: "Elliptical trainer, fast", fr: "Vélo elliptique, rapide" }, steps: 270, type: 'simple' },
+                { id: "elliptical_medium", name: { en: "Elliptical trainer, medium", fr: "Vélo elliptique, moyen" }, steps: 200, type: 'simple' },
+                { id: "firewood_carrying", name: { en: "Firewood, carrying", fr: "Bois de chauffage, transport" }, steps: 176, type: 'simple' },
+                { id: "firewood_chopping", name: { en: "Firewood, chopping", fr: "Bois de chauffage, coupe" }, steps: 300, type: 'simple' },
+                { id: "firewood_sawing", name: { en: "Firewood, sawing with handsaw", fr: "Bois de chauffage, sciage à la main" }, steps: 113, type: 'simple' },
+                { id: "firewood_stacking", name: { en: "Firewood, stacking", fr: "Bois de chauffage, empilage" }, steps: 89, type: 'simple' },
+                { id: "gardening_heavy", name: { en: "Gardening, heavy", fr: "Jardinage, intense" }, steps: 155, type: 'simple' },
+                { id: "gardening_hoeing", name: { en: "Gardening, hoeing, moderate", fr: "Jardinage, binage, modéré" }, steps: 93, type: 'simple' },
+                { id: "gardening_weeding", name: { en: "Gardening, weeding, (seated/kneeling)", fr: "Jardinage, désherbage (assis/à genoux)" }, steps: 73, type: 'simple' },
+                { id: "golf_walk", name: { en: "Golfing, walking, no cart", fr: "Golf, marche, sans voiturette" }, steps: 100, type: 'simple' },
+                { id: "golf_cart", name: { en: "Golfing, with a cart", fr: "Golf, avec voiturette" }, steps: 70, type: 'simple' },
+                { id: "handball_comp", name: { en: "Handball, competitive", fr: "Handball, compétition" }, steps: 230, type: 'simple' },
+                { id: "handball_rec", name: { en: "Handball, recreational", fr: "Handball, récréatif" }, steps: 142, type: 'simple' },
+                { id: "hiking", name: { en: "Hiking", fr: "Randonnée" }, steps: 155, type: 'simple' },
+                { id: "hiking_10lb", name: { en: "Hiking, 10 lb load (4.5 kg)", fr: "Randonnée, charge de 10 lb (4,5 kg)" }, steps: 180, type: 'simple' },
+                { id: "hiking_30lb", name: { en: "Hiking, 30 lb load (13.6 kg)", fr: "Randonnée, charge de 30 lb (13,6 kg)" }, steps: 235, type: 'simple' },
+                { id: "horse_leisure", name: { en: "Horseback riding, leisurely", fr: "Équitation, tranquille" }, steps: 31, type: 'simple' },
+                { id: "horse_trot", name: { en: "Horseback riding, trotting", fr: "Équitation, trot" }, steps: 102, type: 'simple' },
+                { id: "house_vacuum", name: { en: "Housework, general, vacuuming", fr: "Ménage, général, aspirateur" }, steps: 90, type: 'simple' },
+                { id: "house_mop", name: { en: "Housework, mopping floors", fr: "Ménage, laver les sols" }, steps: 85, type: 'simple' },
+                { id: "house_scrub", name: { en: "Housework, scrubbing the floor", fr: "Ménage, frotter le sol" }, steps: 140, type: 'simple' },
+                { id: "pickleball_double", name: { en: "Pickleball (Doubles)", fr: "Pickleball (Doubles)" }, steps: 140, type: 'simple' },
+                { id: "pickleball_single", name: { en: "Pickleball (Singles)", fr: "Pickleball (Simples)" }, steps: 156, type: 'simple' },
+                { id: "pilates", name: { en: "Pilates (Moderate)", fr: "Pilates (Modéré)" }, steps: 103, type: 'simple' },
+                { id: "running", name: { en: "Running", fr: "Course à pied" }, type: 'speed_based', points: [{ speed: 8, steps: 185 }, { speed: 10, steps: 230 }, { speed: 13, steps: 305 }, { speed: 16, steps: 350 }], unit: 'kph' },
+                { id: "scuba", name: { en: "Scuba diving", fr: "Plongée sous-marine" }, steps: 190, type: 'simple' },
+                { id: "shopping", name: { en: "Shopping for groceries", fr: "Faire l'épicerie" }, steps: 60, type: 'simple' },
+                { id: "ski_xc_intense", name: { en: "Skiing, cross country, intense", fr: "Ski de fond, intense" }, steps: 330, type: 'simple' },
+                { id: "ski_xc_mod", name: { en: "Skiing, cross country, moderate", fr: "Ski de fond, modéré" }, steps: 220, type: 'simple' },
+                { id: "ski_xc_slow", name: { en: "Skiing, cross country, slowly", fr: "Ski de fond, lent" }, steps: 110, type: 'simple' },
+                { id: "ski_downhill", name: { en: "Skiing, downhill, slowly", fr: "Ski alpin, lent" }, steps: 130, type: 'simple' },
+                { id: "ski_water", name: { en: "Skiing, water", fr: "Ski nautique" }, steps: 160, type: 'simple' },
+                { id: "skip_fast", name: { en: "Skipping rope, fast", fr: "Corde à sauter, rapide" }, steps: 285, type: 'simple' },
+                { id: "skip_mod", name: { en: "Skipping rope, moderate", fr: "Corde à sauter, modéré" }, steps: 167, type: 'simple' },
+                { id: "snowshoe", name: { en: "Snowshoeing", fr: "Raquette" }, steps: 156, type: 'simple' },
+                { id: "snow_shovel", name: { en: "Snow shoveling", fr: "Pelleter la neige" }, steps: 195, type: 'simple' },
+                { id: "snow_shovel_heavy", name: { en: "Snow shoveling, heavy", fr: "Pelleter la neige, intense" }, steps: 278, type: 'simple' },
+                { id: "soccer_comp", name: { en: "Soccer, competitive", fr: "Soccer, compétition" }, steps: 195, type: 'simple' },
+                { id: "soccer_rec", name: { en: "Soccer, recreational", fr: "Soccer, récréatif" }, steps: 144, type: 'simple' },
+                { id: "squash", name: { en: "Squash", fr: "Squash" }, steps: 205, type: 'simple' },
+                { id: "stair_machine", name: { en: "Stair climbing machine", fr: "Stairmaster" }, steps: 160, type: 'simple' },
+                { id: "stair_climb", name: { en: "Stair climbing", fr: "Monter les escaliers" }, type: 'speed_based', points: [{ speed: 26, steps: 89 }, { speed: 39, steps: 133 }, { speed: 52, steps: 180 }, { speed: 78, steps: 267 }, { speed: 91, steps: 309 }, { speed: 100, steps: 311 }], unit: 'stairs/min' },
+                { id: "swim_general", name: { en: "Swimming", fr: "Natation" }, type: 'speed_based', points: [{ speed: 23, steps: 120 }, { speed: 46, steps: 225 }, { speed: 69, steps: 290 }], unit: 'meters/min' },
+                { id: "swim_back", name: { en: "Swimming, back stroke", fr: "Natation, dos" }, type: 'speed_based', points: [{ speed: 1.6, steps: 111 }, { speed: 3.2, steps: 196 }], unit: 'kph' },
+                { id: "swim_breast", name: { en: "Swimming, breast stroke", fr: "Natation, brasse" }, type: 'speed_based', points: [{ speed: 1.6, steps: 89 }, { speed: 3.2, steps: 178 }], unit: 'kph' },
+                { id: "swim_crawl", name: { en: "Swimming, crawl stroke", fr: "Natation, crawl" }, type: 'speed_based', points: [{ speed: 1.6, steps: 91 }, { speed: 3.2, steps: 156 }], unit: 'kph' },
+                { id: "swim_tread", name: { en: "Swimming, treading water", fr: "Natation, sur place" }, steps: 98, type: 'simple' },
+                { id: "taichi", name: { en: "Tai Chi", fr: "Tai Chi" }, steps: 8, type: 'simple' },
+                { id: "tennis_double", name: { en: "Tennis, doubles", fr: "Tennis, double" }, steps: 110, type: 'simple' },
+                { id: "tennis_single", name: { en: "Tennis, singles", fr: "Tennis, simple" }, steps: 160, type: 'simple' },
+                { id: "weightlift", name: { en: "Weightlifting or Strength Training", fr: "Haltérophilie ou musculation" }, steps: 110, type: 'simple' },
+                { id: "yoga_hot", name: { en: "Yoga (Hot/Vigorous)", fr: "Yoga (Chaud/Vigoureux)" }, steps: 120, type: 'simple' },
+                { id: "yoga_restorative", name: { en: "Yoga (Restorative/Stretching)", fr: "Yoga (Restaurateur/Éirement)" }, steps: 50, type: 'simple' },
+            ],
+            getActivity(id) {
+                return this.activities.find(a => a.id === id);
+            }
+        };
+    </script>
+    
+    <!-- CALCULATOR MODULE -->
+    <script>
+        const Calculator = {
+            getInterpolatedSteps(speed, points) {
+                points.sort((a, b) => a.speed - b.speed);
+                if (speed <= points[0].speed) return points[0].steps;
+                if (speed >= points[points.length - 1].speed) return points[points.length - 1].steps;
+                let lowerPoint, upperPoint;
+                for (let i = 0; i < points.length; i++) {
+                    if (points[i].speed >= speed) {
+                        upperPoint = points[i];
+                        lowerPoint = points[i - 1];
+                        break;
+                    }
+                }
+                const speedRange = upperPoint.speed - lowerPoint.speed;
+                if (speedRange === 0) return lowerPoint.steps;
+                const stepRange = upperPoint.steps - lowerPoint.steps;
+                const speedOffset = speed - lowerPoint.speed;
+                return lowerPoint.steps + (speedOffset / speedRange) * stepRange;
+            },
+            calculateMetrics(activity, inputs) {
+                const { distance, minutes, seconds } = inputs;
+                const totalTimeInMinutes = minutes + (seconds / 60);
+                let results = { estimatedSteps: 0, avgSpeed: 0, stepsPerMinute: 0, explanation: '' };
+                if (totalTimeInMinutes <= 0) return results;
+                if (activity.type === 'simple') {
+                    results.stepsPerMinute = activity.steps;
+                    results.estimatedSteps = Math.round(results.stepsPerMinute * totalTimeInMinutes);
+                    results.explanation = Lang.get('explanationSimple').replace('{stepsPerMinute}', `<strong>${results.stepsPerMinute}</strong>`);
+                } else if (activity.type === 'speed_based' && distance > 0) {
+                    if (activity.unit === 'kph') {
+                        const totalTimeInHours = totalTimeInMinutes / 60;
+                        results.avgSpeed = distance / totalTimeInHours;
+                    } else {
+                        results.avgSpeed = distance / totalTimeInMinutes;
+                    }
+                    results.stepsPerMinute = this.getInterpolatedSteps(results.avgSpeed, activity.points);
+                    results.estimatedSteps = Math.round(results.stepsPerMinute * totalTimeInMinutes);
+                    results.explanation = Lang.get('explanationSpeed')
+                        .replace('{avgSpeed}', `<strong>${results.avgSpeed.toFixed(2)}</strong>`)
+                        .replace('{unit}', activity.unit)
+                        .replace('{stepsPerMinute}', `<strong>${Math.round(results.stepsPerMinute)}</strong>`);
+                }
+                return results;
+            }
+        };
+    </script>
+
+    <!-- UI MODULE & APP INITIALIZATION -->
+    <script>
+        const UI = {
+            elements: {
+                activitySelect: document.getElementById('activity'),
+                distanceContainer: document.getElementById('distance-container'),
+                distanceInput: document.getElementById('distance'),
+                distanceLabelText: document.getElementById('distance-label-text'),
+                minutesContainer: document.getElementById('minutes-container'),
+                minutesInput: document.getElementById('minutes'),
+                secondsContainer: document.getElementById('seconds-container'),
+                secondsInput: document.getElementById('seconds'),
+                stepsResultContainer: document.getElementById('steps-result-container'),
+                stepsResultP: document.getElementById('stepsResult'),
+                speedResultContainer: document.getElementById('speed-result-container'),
+                speedResultP: document.getElementById('speedResult'),
+                speedLabel: document.getElementById('speed-label'),
+                explanationText: document.getElementById('explanation-text'),
+                summaryTableBody: document.getElementById('summary-table-body'),
+                langEnBtn: document.getElementById('lang-en'),
+                langFrBtn: document.getElementById('lang-fr'),
+            },
+            updateTexts() {
+                document.documentElement.lang = Lang.current;
+                document.getElementById('main-title').textContent = Lang.get('mainTitle');
+                document.getElementById('main-subtitle').textContent = Lang.get('mainSubtitle');
+                document.getElementById('activity-label').textContent = Lang.get('activityLabel');
+                document.getElementById('minutes-label').textContent = Lang.get('minutesLabel');
+                document.getElementById('seconds-label').textContent = Lang.get('secondsLabel');
+                document.getElementById('steps-label').innerHTML = `<i class="bi bi-person-walking me-2"></i>${Lang.get('stepsLabel')}`;
+                document.getElementById('explanation-title').innerHTML = `<i class="bi bi-info-circle me-2"></i>${Lang.get('explanationTitle')}`;
+                document.getElementById('summary-title').textContent = Lang.get('summaryTitle');
+                document.getElementById('summary-activity-header').textContent = Lang.get('summaryActivityHeader');
+                document.getElementById('summary-factor-header').textContent = Lang.get('summaryFactorHeader');
+                this.elements.langEnBtn.classList.toggle('active', Lang.current === 'en');
+                this.elements.langFrBtn.classList.toggle('active', Lang.current === 'fr');
+            },
+            populateActivities(activities) {
+                this.elements.activitySelect.innerHTML = '';
+                activities.sort((a, b) => a.name[Lang.current].localeCompare(b.name[Lang.current]));
+                activities.forEach(activity => {
+                    const option = document.createElement('option');
+                    option.value = activity.id;
+                    option.textContent = activity.name[Lang.current];
+                    this.elements.activitySelect.appendChild(option);
+                });
+            },
+            populateSummaryTable(activities) {
+                const tableBody = this.elements.summaryTableBody;
+                tableBody.innerHTML = '';
+                activities.sort((a, b) => a.name[Lang.current].localeCompare(b.name[Lang.current]));
+                activities.forEach(activity => {
+                    const row = tableBody.insertRow();
+                    const cell1 = row.insertCell();
+                    const cell2 = row.insertCell();
+                    cell1.textContent = activity.name[Lang.current];
+                    if (activity.type === 'simple') {
+                        cell2.textContent = activity.steps;
+                    } else if (activity.type === 'speed_based') {
+                        cell2.innerHTML = activity.points.map(p => `${p.speed} ${activity.unit}: ${p.steps} steps`).join('<br>');
+                    }
+                });
+            },
+            updateForActivity(activity) {
+                if (activity.type === 'speed_based') {
+                    this.elements.distanceContainer.classList.remove('d-none');
+                    this.elements.speedResultContainer.classList.remove('d-none');
+                    this.elements.stepsResultContainer.className = 'col-md-6 text-center mb-3 mb-md-0';
+                    this.elements.speedResultContainer.className = 'col-md-6 text-center';
+                    this.elements.minutesContainer.className = 'col-12 col-sm-4';
+                    this.elements.secondsContainer.className = 'col-12 col-sm-4';
+                    
+                    let unit = activity.unit || 'km';
+                    let speedUnit = activity.unit;
+                    if (unit === 'kph') unit = 'km';
+
+                    this.elements.distanceLabelText.textContent = `${Lang.get('distanceLabel')} (${unit})`;
+                    this.elements.speedLabel.innerHTML = `<i class="bi bi-speedometer2 me-2"></i>${Lang.get('speedLabel')} (${speedUnit})`;
+                } else {
+                    this.elements.distanceContainer.classList.add('d-none');
+                    this.elements.speedResultContainer.classList.add('d-none');
+                    this.elements.stepsResultContainer.className = 'col-12 text-center';
+                    this.elements.minutesContainer.className = 'col-6';
+                    this.elements.secondsContainer.className = 'col-6';
+                }
+            },
+            displayResults(results) {
+                this.elements.stepsResultP.textContent = results.estimatedSteps.toLocaleString();
+                this.elements.speedResultP.textContent = results.avgSpeed.toFixed(2);
+                this.elements.explanationText.innerHTML = results.explanation || '';
+            },
+            getInputs() {
+                const minutes = parseInt(this.elements.minutesInput.value) || 0;
+                let seconds = parseInt(this.elements.secondsInput.value) || 0;
+                if (seconds > 59) {
+                    seconds = 59;
+                    this.elements.secondsInput.value = 59;
+                }
+                return {
+                    distance: parseFloat(this.elements.distanceInput.value) || 0,
+                    minutes: minutes,
+                    seconds: seconds
+                };
+            }
+        };
+
+        const App = {
+            init() {
+                this.addEventListeners();
+                this.setDefaultActivity();
+                this.render();
+            },
+            addEventListeners() {
+                UI.elements.langEnBtn.addEventListener('click', () => Lang.set('en'));
+                UI.elements.langFrBtn.addEventListener('click', () => Lang.set('fr'));
+                UI.elements.activitySelect.addEventListener('change', () => this.render());
+                [UI.elements.distanceInput, UI.elements.minutesInput, UI.elements.secondsInput].forEach(input => {
+                    input.addEventListener('input', () => this.calculateAndDisplay());
+                });
+            },
+            calculateAndDisplay() {
+                const activityId = UI.elements.activitySelect.value;
+                const activity = Data.getActivity(activityId);
+                if (!activity || !UI.elements.secondsInput.checkValidity()) {
+                    UI.displayResults({ estimatedSteps: 0, avgSpeed: 0, explanation: Lang.get('explanationInvalid') });
+                    return;
+                };
+                const inputs = UI.getInputs();
+                const results = Calculator.calculateMetrics(activity, inputs);
+                UI.displayResults(results);
+            },
+            setDefaultActivity() {
+                UI.elements.activitySelect.value = "running";
+            },
+            render() {
+                const selectedActivityId = UI.elements.activitySelect.value || 'running';
+                UI.updateTexts();
+                UI.populateActivities(Data.activities);
+                UI.populateSummaryTable(Data.activities);
+                UI.elements.activitySelect.value = selectedActivityId;
+                const activity = Data.getActivity(selectedActivityId);
+                if (activity) {
+                    UI.updateForActivity(activity);
+                    this.calculateAndDisplay();
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => App.init());
+    </script>
+
+</body>
+</html>
