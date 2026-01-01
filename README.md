@@ -2,6 +2,8 @@
 
 **A Curated Gallery of Interactive Visualizations**
 
+![Screenshot](https://raw.githubusercontent.com/shfqrkhn/Data-Doodles/refs/heads/main/%7B81822E6B-22FD-4F4D-9279-4A4637196E15%7D.png)
+
 -----
 
 ## The Gallery
