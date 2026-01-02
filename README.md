@@ -12,6 +12,7 @@ Explore the collection of visualizations below, organized by category and subcat
 
 | Category | Subcategory | Title & Link |
 | :-------------- | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Guides** | Board Game | [AIO Board Game Codexl](https://shfqrkhn.github.io/Data-Doodles/Guide_Boardgames-AIO_Codex.html) |
 | **Guides** | Game | [Hades: The Eris Protocol](https://shfqrkhn.github.io/Data-Doodles/Guide_Game-Hades_The_Eris_Protocol.html) |
 | **Guides** | Gardening | [The Canadian Eco-Garden Planner](https://shfqrkhn.github.io/Data-Doodles/Guide_Gardening-The_Canadian_Eco-Garden_Planner.html) |
 | **Guides** | Other | [The Wishlist Machine](https://shfqrkhn.github.io/Data-Doodles/Guide_Other-The_Wishlist_Machine.html) |
